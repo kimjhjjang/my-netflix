@@ -33,6 +33,8 @@
     6) npm i framer-motion
     7) npm i react-helmet
 
+    8) npm i react-hook-form
+
 # Getting Movies Poster API
 TheMovieDB API Key
 https://www.themoviedb.org/settings/api?language=ko
@@ -42,3 +44,13 @@ https://developers.themoviedb.org/3/movies/get-now-playing
 
 TheMovieDB Image가져오기
 이미지 파일명 앞에 https://image.tmdb.org/t/p/original/ 붙이기
+
+
+# add Task
+
+Tasks:
+On the / (home) page implement sliders for: Latest movies, Top Rated Movies and Upcoming Movies.
+On the /tv page implement sliders for: Latest Shows, Airing Today, Popular, Top Rated.
+On the /search page implement sliders for movie results and tv results.
+Make the /movie/:id prettier.
+Implement /tv/:id as well.
