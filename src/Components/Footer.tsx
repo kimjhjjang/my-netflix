@@ -20,15 +20,6 @@ const FooterBox = styled.div`
 const Copyright = styled.span`
     line-height: 3;
 `;
-const Icon = styled.div`
-    backgorund-color: yellow;
-    ul {
-        display: flex;
-        li {
-            margin-right: 30px;
-        }
-    }
-`;
 
 
 function Footer () {
@@ -38,22 +29,6 @@ function Footer () {
             <Copyright>
                 Copyright © 2022 All Rights Reserved by Clone-Netflix
             </Copyright>
-            <Icon>
-                <ul>
-                    <li>
-                        <i>1</i>
-                    </li>
-                    <li>
-                        <i>2</i>
-                    </li>
-                    <li>
-                        <i>3</i>
-                    </li>
-                    <li>
-                        <i>4</i>
-                    </li>
-                </ul>
-            </Icon>
         </FooterBox>
     </Wrapper>
     )
