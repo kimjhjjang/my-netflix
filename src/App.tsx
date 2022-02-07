@@ -1,4 +1,5 @@
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import Home from "./Routes/Home";
 import Search from "./Routes/Search";
@@ -20,6 +21,7 @@ function App() {
         <Home/>
           </Route>
       </Switch>
+      <Footer/>
     </Router>
   );
 }

@@ -125,7 +125,7 @@ const Top10: React.FC<IOnBoxClicked> = ({
           <StyledSlider {...settings}>
             {popMovies?.results.slice(0, 10).map((topMovie, i) => (
               <Box
-                key={"top" + topMovie.id}
+                key={"top10" + topMovie.id}
                 onClick={() => onBoxClicked(topMovie.id, "Top10")}
                 /* bgphoto={makeImagePath(topMovie.poster_path, "w300")} */
               >
@@ -150,6 +150,7 @@ const Top10: React.FC<IOnBoxClicked> = ({
             ))}
           </StyledSlider>
         </Row>
+        
       )}
     </>
   );

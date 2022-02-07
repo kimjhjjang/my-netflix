@@ -81,14 +81,49 @@ export function getPopularMovies(){
   );
 }
 
-//top_rated movie
-//https://api.themoviedb.org/3/movie/top_rated?api_key=cecb32ef334e1e99acad636e9c0aea98&language=ko-kr
+export function getUpcomingMovie(){
+  return fetch(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
+}
 
-// upcomming soon
-//https://api.themoviedb.org/3/movie/upcoming?api_key=cecb32ef334e1e99acad636e9c0aea98&language=ko-KR&page=1
+export function getTopRateMovie(){
+  return fetch(`${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
+}
+
+//On the /tv page implement sliders for:
+
+interface ITv {
+  backdrop_path: string;
+  id: number;
+  name: string;
+  original_name: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  vote_average: number;
+  vote_count: number;
+}
+
+export interface IGetTvResult {
+  page : number;
+  results : ITv[],
+}
+
+export function getTopRateTv(){
+  return fetch(`${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
+}
+export function getLatestTv(){
+  return fetch(`${BASE_PATH}/tv/latest?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
+}
+export function getPopularTv(){
+  return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
+}
+export function getAiringTv(){
+  return fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=ko-kr`).then((response) => response.json());
+}
+
+
+//Airing Today
+// https://api.themoviedb.org/3/tv/airing_today?api_key=cecb32ef334e1e99acad636e9c0aea98&language=ko-kr
 
 // tv 프로그램 검색했을때
 //https://api.themoviedb.org/3/search/tv?api_key=cecb32ef334e1e99acad636e9c0aea98&language=ko-kr&page=1&query=<keyword>&include_adult=false
-
-//인기 순위
-//https://api.themoviedb.org/3/movie/popular?api_key=cecb32ef334e1e99acad636e9c0aea98&language=ko-kr&page=1

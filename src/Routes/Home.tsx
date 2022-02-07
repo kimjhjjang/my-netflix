@@ -4,6 +4,8 @@ import { motion, AnimatePresence, useViewportScroll } from "framer-motion";
 import {
   getMovies,
   getPopularMovies,
+  getTopRateMovie,
+  getUpcomingMovie,
   IGetMoviesResult,
   IPopularMoviesResult,
 } from "../api";
@@ -48,7 +50,8 @@ const Overview = styled.p`
 
 const Slider = styled.div`
   position: relative;
-  top: -100px;
+  height: 200px;
+  margin-bottom: 30px;
 `;
 
 const Row = styled(motion.div)`
@@ -56,7 +59,7 @@ const Row = styled(motion.div)`
   gap: 5px;
   grid-template-columns: repeat(6, 1fr);
   width: 100%;
-  margin-top: 20px;
+  position: absolute;
 `;
 
 const Box = styled(motion.div)<{ bgphoto: string }>`
@@ -97,6 +100,11 @@ const Overlay = styled(motion.div)`
   opacity: 0;
 `;
 
+const H1 = styled.h1`
+  margin: 0 0 50px 60px;
+  font-size: 36px;
+`;
+
 const BigMovie = styled(motion.div)`
   position: absolute;
   width: 40vw;
@@ -132,15 +140,15 @@ const BigOverview = styled(motion.p)`
 `;
 
 const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 5,
-  },
+  hidden: (isBack: boolean) => ({
+    x: isBack ? -window.outerWidth - 5 : window.outerWidth + 5,
+  }),
   visible: {
     x: 0,
   },
-  exit: {
-    x: -window.outerWidth - 5,
-  },
+  exit: (isBack: boolean) => ({
+    x: isBack ? window.outerWidth + 5 : -window.outerWidth - 5,
+  }),
 };
 
 const boxVariants = {
@@ -169,45 +177,150 @@ const infoVariants = {
   },
 };
 
+const MoveBox = styled.div`
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const MoveButton = styled.button`
+  height: 200px;
+  z-index: 2;
+  opacity: 0.2;
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
 const offset: number = 6;
 
 function Home() {
   const history = useHistory();
   const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
   const { scrollY } = useViewportScroll();
-  //상영중인 영화
-  const { data, isLoading } = useQuery<IGetMoviesResult>(
-    ["movies", "nowPlaying"],
-    getMovies
-  );
-  // Top 10 영화
+  // 오늘 TOP 10
   const { data: popMovies, isLoading: popLoading } =
     useQuery<IPopularMoviesResult>(
       ["movies", "popularMovie"],
       getPopularMovies
     );
 
-  const [index, setIndex] = useState(0);
+  //상영중인 영화
+  const { data, isLoading } = useQuery<IGetMoviesResult>(
+    ["movies", "nowPlaying"],
+    getMovies
+  );
+
+  // 인기 콘텐츠
+  const { data: topMovies, isLoading: topLoading } = useQuery<IGetMoviesResult>(
+    ["movies", "topMovie"],
+    getTopRateMovie
+  );
+
+  //개봉 영화
+  const { data: comingMovies, isLoading: comingLoading } =
+    useQuery<IGetMoviesResult>(["movies", "upcomingMovie"], getUpcomingMovie);
+
+  const [isBack, setIsBack] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
-  const incraseIndex = () => {
-    if (data) {
-      if (leaving) return;
-      toggleLeaving();
-      const totalMovies = data.results.length - 1;
-      const maxIndex = Math.floor(totalMovies / offset) - 1;
-      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+  const [index, setIndex] = useState(0); //상영중
+  const [topIndex, setTopIndex] = useState(0); // 인기 콘텐츠
+  const [comingIndex, setComingIndex] = useState(0); // 개봉예정
+
+
+
+  const nextIndex = (type: number) => {
+    switch (type) {
+      case 0:
+        if (data) {
+          if (leaving) return;
+          toggleLeaving();
+          setIsBack(false);
+          const totalMovies = data?.results.length - 1;
+          const maxIndex = Math.floor(totalMovies / offset) - 1;
+          setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+        }
+        break;
+      case 1:
+        if (topMovies) {
+          if (leaving) return;
+          toggleLeaving();
+          setIsBack(false);
+          const totalMovies = topMovies.results.length - 1;
+          const maxIndex = Math.floor(totalMovies / offset) - 1;
+          setTopIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+        }
+        break;
+      case 2:
+        if (comingMovies) {
+          if (leaving) return;
+          toggleLeaving();
+          setIsBack(false);
+          const totalMovies = comingMovies.results.length - 1;
+          const maxIndex = Math.floor(totalMovies / offset) - 1;
+          setComingIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+        }
+        break;
+    }
+  };
+
+  const prevIndex = (type: number) => {
+    switch (type) {
+      case 0:
+        if (data) {
+          if (leaving) return;
+          toggleLeaving();
+          setIsBack(true);
+          const totalMovies = data?.results.length - 1;
+          const maxIndex = Math.floor(totalMovies / offset) - 1;
+          setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+        }
+        break;
+      case 1:
+        if (topMovies) {
+          if (leaving) return;
+          toggleLeaving();
+          setIsBack(true);
+          const totalMovies = topMovies.results.length - 1;
+          const maxIndex = Math.floor(totalMovies / offset) - 1;
+          setTopIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+        }
+        break;
+      case 2:
+        if (comingMovies) {
+          if (leaving) return;
+          toggleLeaving();
+          setIsBack(true);
+          const totalMovies = comingMovies.results.length - 1;
+          const maxIndex = Math.floor(totalMovies / offset) - 1;
+          setComingIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+        }
+        break;
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number, movieType?: string): void => {
     history.push(`/movies/${movieId}`);
-    console.log(movieType);
   };
-  const onOverlayClick = () => history.push("/");
+
+  const nowplaying_movie = data?.results;
+  const pop_movie = popMovies?.results;
+  const top_movie = topMovies?.results;
+  const coming_movie = comingMovies?.results;
+
+  const totalMovie = nowplaying_movie?.concat(
+    pop_movie as any,
+    top_movie as any,
+    coming_movie as any
+  );
+
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
-    data?.results.find((movie) => movie.id === +bigMovieMatch.params.movieId);
+    totalMovie!.find((movie) => movie.id === +bigMovieMatch.params.movieId);
+
+  const onOverlayClick = () => history.push("/");
 
   return (
     <Wrapper>
@@ -215,10 +328,7 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner
-            onClick={incraseIndex}
-            bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
-          >
+          <Banner bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}>
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
             <button
@@ -229,22 +339,25 @@ function Home() {
                 padding: "10px",
                 fontSize: "15px",
                 fontWeight: 600,
+                marginTop : "20px",
               }}
             >
               상세 정보
             </button>
           </Banner>
+          <H1>오늘 TOP 10 콘텐츠</H1>
+          <Top10
+            onBoxClicked={onBoxClicked}
+            popMovies={popMovies!}
+            popLoading={popLoading}
+          />
+          <H1>상영중인 콘텐츠</H1>
           <Slider>
-            <h1 style={{ margin: "0 0 50px 60px", fontSize: "36px" }}>
-              오늘 TOP 10 콘텐츠
-            </h1>
-            <Top10
-              onBoxClicked={onBoxClicked}
-              popMovies={popMovies!}
-              popLoading={popLoading}
-            />
-            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-              <h1>상영중인 콘텐츠</h1>
+          <MoveBox>
+                <MoveButton onClick={() => prevIndex(0)}>&larr;</MoveButton>
+                <MoveButton onClick={() => nextIndex(0)}>&rarr;</MoveButton>
+              </MoveBox>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving} custom={isBack}>
               <Row
                 variants={rowVariants}
                 initial="hidden"
@@ -252,6 +365,7 @@ function Home() {
                 exit="exit"
                 transition={{ type: "tween", duration: 1 }}
                 key={index}
+                custom={isBack}
               >
                 {data?.results
                   .slice(1)
@@ -264,6 +378,84 @@ function Home() {
                       whileHover="hover"
                       initial="normal"
                       onClick={() => onBoxClicked(movie.id, "now")}
+                      transition={{ type: "tween" }}
+                      bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
+                  ))}
+              </Row>
+            </AnimatePresence>
+          </Slider>
+
+          <H1>인기 콘텐츠</H1>
+          <Slider>
+          <MoveBox>
+                <MoveButton onClick={() => prevIndex(1)}>&larr;</MoveButton>
+                <MoveButton onClick={() => nextIndex(1)}>&rarr;</MoveButton>
+              </MoveBox>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving} custom={isBack}>
+              <Row
+                variants={rowVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={{ type: "tween", duration: 1 }}
+                key={topIndex}
+                custom={isBack}
+              >
+                {topMovies?.results
+                  .slice(1)
+                  .slice(offset * topIndex, offset * topIndex + offset)
+                  .map((movie) => (
+                    <Box
+                      layoutId={movie.id + ""}
+                      key={movie.id}
+                      variants={boxVariants}
+                      whileHover="hover"
+                      initial="normal"
+                      onClick={() => onBoxClicked(movie.id, "top")}
+                      transition={{ type: "tween" }}
+                      bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
+                  ))}
+              </Row>
+            </AnimatePresence>
+          </Slider>
+
+          <H1>개봉 예정 콘텐츠</H1>
+          <Slider>
+          <MoveBox>
+                <MoveButton onClick={() => prevIndex(2)}>&larr;</MoveButton>
+                <MoveButton onClick={() => nextIndex(2)}>&rarr;</MoveButton>
+              </MoveBox>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving} custom={isBack}>
+              <Row
+                variants={rowVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={{ type: "tween", duration: 1 }}
+                key={comingIndex}
+                custom={isBack}
+              >
+                {comingMovies?.results
+                  .slice(1)
+                  .slice(offset * comingIndex, offset * comingIndex + offset)
+                  .map((movie) => (
+                    <Box
+                      layoutId={movie.id + ""}
+                      key={movie.id}
+                      variants={boxVariants}
+                      whileHover="hover"
+                      initial="normal"
+                      onClick={() => onBoxClicked(movie.id, "coming")}
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
