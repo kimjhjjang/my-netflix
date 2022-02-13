@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { adminState } from "../recoil/admin";
+import { adminState, saveUsers } from "../recoil/admin";
+
 
 const Container = styled.div`
   width: 100%;
@@ -26,7 +29,7 @@ const H1 = styled.h1`
   font-weight: 400;
 `;
 
-const Users = styled.ul`
+const Users = styled(motion.ul)`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -62,9 +65,9 @@ const UserEdit = styled.div`
 `;
 
 const EditIcon = styled.svg`
-    width: 30px;
-    height: 30px;
-`
+  width: 30px;
+  height: 30px;
+`;
 
 const UserImg = styled.div`
   height: 10vw;
@@ -92,7 +95,7 @@ const UserName = styled.p`
   color: grey;
 `;
 
-const useVariants = {
+const userVariants = {
   init: {
     scale: 1.2,
     opacity: 0,
@@ -113,49 +116,226 @@ const DeleteBox = styled.span`
   font-size: 20px;
 `;
 
-function ManageProfiles() {
-  const [admin, setAdmin] = useRecoilState(adminState);
+const EditBoxForm = styled(motion.form)``;
 
+const AddInput = styled.input`
+  width: 18em;
+  height: 2em;
+  background: #666;
+  border: 1px solid transparent;
+  margin: 0 0.8em 0 0.8em;
+  padding: 0.2em 0.6em;
+  color: #fff;
+  font-size: 1.3vw;
+  box-sizing: border-box;
+  text-indent: 0.1vw;
+`;
+
+const ProfileBox = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModifyProfile = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 30px 0px;
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
+  padding: 20px 0px;
+`;
+
+const H2 = styled.h2`
+  color: grey;
+  font-size: 1.7vw;
+  padding: 15px;
+  margin-top: 1vh;
+`;
+
+const Bnt = styled.button`
+  display: inline-block;
+  margin-right: 20px;
+  font-size: 1.2vw;
+  border: 1px solid grey;
+  padding: 0.5em 1.5em;
+  letter-spacing: 2px;
+  cursor: pointer;
+  background-color: black;
+  color: white;
+  font-weight: 700;
+  &:first-child {
+    background-color: white;
+    color: black;
+  }
+  &:hover {
+    background-color: tomato;
+  }
+`;
+
+const AddBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 10vw;
+`;
+
+const ChildInput = styled.input`
+  border: 1px solid #333;
+  border-radius: 0;
+  display: inline-block;
+  position: relative;
+  margin-left: 30px;
+  font-size: 0.8vw;
+  width: 2.5em;
+  height: 2.5em;
+`;
+
+const CHeckBox = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+`;
+
+const EditInputBox = styled.div``;
+const EditCheckBox = styled.div``;
+
+interface IUserProps {
+  name: string;
+  child: boolean;
+  isUse: boolean;
+}
+
+function ManageProfiles() {
+  
+  const [admin, setAdmin] = useRecoilState(adminState);
+  const [user, setUser] = useState("");
+  const editUser = (userName: string) => {
+    setUser(userName);
+    setValue("name",userName);
+    setValue("isUse",admin[userName][0].isUse);
+    setValue("child",admin[userName][0].child);
+  };
+  const { register, handleSubmit, setValue } = useForm<IUserProps>();
+  const onValids = ({ name, child , isUse }: IUserProps) => {
+   
+    const data = {...admin};
+    const newData = { [name] : [
+          {id: Date.now(),
+            isUse: isUse,
+            child: child,}
+        ] 
+    }
+    const result = Object.assign({}, data, newData);
+    delete result[user]
+
+    setAdmin(result);
+    saveUsers(result);
+    setUser("");
+
+    //setValue("name", "");
+  };
+  
+  const onClicked = () => {
+    setUser("");
+  };
   return (
     <Container>
-      <UserBox variants={useVariants} initial="init" animate="animate">
-        <H1>프로필 관리</H1>
-        <Users>
-          {Object.keys(admin).map((user, i) => (
-            <User key={i}>
-              <UserImg>
-                <UserEdit>
-                  <EditIcon
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"
-                  >
-                    <motion.path
-                      fill="white"
-                      d="M362.7 19.32C387.7-5.678 428.3-5.678 453.3 19.32L492.7 58.75C517.7 83.74 517.7 124.3 492.7 149.3L444.3 197.7L314.3 67.72L362.7 19.32zM421.7 220.3L188.5 453.4C178.1 463.8 165.2 471.5 151.1 475.6L30.77 511C22.35 513.5 13.24 511.2 7.03 504.1C.8198 498.8-1.502 489.7 .976 481.2L36.37 360.9C40.53 346.8 48.16 333.9 58.57 323.5L291.7 90.34L421.7 220.3z"
+      {user === "" ? (
+        <>
+          <UserBox>
+            <H1>프로필 관리</H1>
+            <Users variants={userVariants} initial="init" animate="animate">
+              {Object.keys(admin).map((user, i) => (
+                <User key={i} onClick={() => editUser(user)}>
+                  <UserImg>
+                    <UserEdit>
+                      <EditIcon
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                      >
+                        <motion.path
+                          fill="white"
+                          d="M362.7 19.32C387.7-5.678 428.3-5.678 453.3 19.32L492.7 58.75C517.7 83.74 517.7 124.3 492.7 149.3L444.3 197.7L314.3 67.72L362.7 19.32zM421.7 220.3L188.5 453.4C178.1 463.8 165.2 471.5 151.1 475.6L30.77 511C22.35 513.5 13.24 511.2 7.03 504.1C.8198 498.8-1.502 489.7 .976 481.2L36.37 360.9C40.53 346.8 48.16 333.9 58.57 323.5L291.7 90.34L421.7 220.3z"
+                        />
+                      </EditIcon>
+                    </UserEdit>
+                    <img
+                      src="./img/admin.png"
+                      alt="base_image"
+                      style={{ width: "100%", height: "100%" }}
                     />
-                  </EditIcon>
-                </UserEdit>
-                <img
-                  src="./img/admin.png"
-                  alt="base_image"
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </UserImg>
-              <UserName>{user}</UserName>
-            </User>
-          ))}
-        </Users>
-      </UserBox>
-      <Link
-        to="/browse"
-        style={{
-          marginTop: "100px",
-          padding: "0px 50px",
-          border: "1px solid white",
-        }}
-      >
-        <DeleteBox>완료</DeleteBox>
-      </Link>
+                  </UserImg>
+                  <UserName>{user}</UserName>
+                </User>
+              ))}
+            </Users>
+          </UserBox>
+          <Link
+            to="/browse"
+            style={{
+              marginTop: "100px",
+              padding: "0px 50px",
+              border: "1px solid white",
+            }}
+          >
+            <DeleteBox>완료</DeleteBox>
+          </Link>
+        </>
+      ) : (
+            <EditBoxForm
+              onSubmit={handleSubmit(onValids)}
+              variants={userVariants}
+              initial="init"
+              animate="animate"
+            >
+              <H1>프로필 변경({user})</H1>
+              <ProfileBox>
+                <ModifyProfile>
+                  <div>
+                    <UserImg>
+                      <img
+                        src="./img/admin.png"
+                        alt="base_image"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </UserImg>
+                  </div>
+                  <AddBox>
+                    <EditInputBox>
+                      <AddInput
+                        {...register("name", { required: true })}
+                        type="text"
+                        id="add-profile-name"
+                        placeholder="이름"
+                      />
+                    </EditInputBox>
+                    <EditCheckBox>
+                      <H2>옵션 설정</H2>
+                      <CHeckBox>
+                        <ChildInput
+                          type="checkbox"
+                          id="child"
+                          {...register("child")}
+                        />
+                        <label htmlFor="child">&nbsp;어린이</label>
+                        <ChildInput
+                          type="checkbox"
+                          id="isUse"
+                          {...register("isUse")}
+                        />
+                        <label htmlFor="isUse">&nbsp;사용 여부</label>
+                      </CHeckBox>
+                    </EditCheckBox>
+                
+                  </AddBox>
+                </ModifyProfile>
+              </ProfileBox>
+              <div>
+                <Bnt>저장</Bnt>
+                <Bnt onClick={onClicked}>취소</Bnt>
+                <Bnt>프로필 삭제</Bnt>
+              </div>
+            </EditBoxForm>
+      )}
     </Container>
   );
 }

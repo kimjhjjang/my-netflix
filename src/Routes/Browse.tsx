@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { adminState, IAdmin, saveUsers } from "../recoil/admin";
+import { adminState, saveUsers } from "../recoil/admin";
 
 const Container = styled.div`
   width: 100%;
@@ -38,6 +38,7 @@ const H2 = styled.h2`
 `;
 
 const Users = styled.ul`
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -156,28 +157,29 @@ const ChildInput = styled.input`
   height: 2.5em;
 `;
 
-const Bnt = styled.span`
+const Bnt = styled.button`
   padding: 20px 40px;
   background-color: white;
   color: black;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
-  &:last-child {
-    margin-left: 20px;
-    background-color: grey;
-  }
   &:hover {
     background-color: tomato;
   }
 `;
 
-const DelBtn = styled.button`
+const Sbnt = styled.span`
+  padding: 20px 40px;
+  background-color: grey;
+  color: black;
+  font-size: 20px;
+  font-weight: 600;
   cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
+  margin-left: 20px;
+  &:hover {
+    background-color: tomato;
+  }
 `;
 
 const DeleteBox = styled.span`
@@ -231,45 +233,54 @@ function Browse() {
     <Container>
       {addProfile ? (
         <>
-        <UserBox variants={useVariants} initial="init" animate="animate">
-          <H1>넷플릭스를 시청할 프로필을 선택하세요.</H1>
-          <Users>
-            {Object.keys(admin).map((user, i) => (
-              <User key={i}>
-                <UserImg>
-                  <DelBtn
-                    value={user}
-                    onClick={userDelete}
-                    style={{ position: "absolute", top: 5, right: 5 }}
-                  >
-                    ❌
-                  </DelBtn>
-                  <img
-                    src="./img/admin.png"
-                    alt="base_image"
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                </UserImg>
-                <UserName>{user}</UserName>
-              </User>
-            ))}
-
-            <User onClick={onClicked}>
-              <PlusIcon>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path
-                    fill="white"
-                    d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 368C269.3 368 280 357.3 280 344V280H344C357.3 280 368 269.3 368 256C368 242.7 357.3 232 344 232H280V168C280 154.7 269.3 144 256 144C242.7 144 232 154.7 232 168V232H168C154.7 232 144 242.7 144 256C144 269.3 154.7 280 168 280H232V344C232 357.3 242.7 368 256 368z"
-                  />
-                </svg>
-              </PlusIcon>
-              <UserName>프로필 추가</UserName>
-            </User>
-          </Users>
-        </UserBox>
-        <Link to="/manageProfiles" style={{marginTop: "100px", padding:"0px 50px", border:"1px solid white"}}>
-          <DeleteBox>프로필 관리</DeleteBox>
-        </Link>
+          <UserBox variants={useVariants} initial="init" animate="animate">
+            <H1>넷플릭스를 시청할 프로필을 선택하세요.</H1>
+            {Object.keys(admin).length >= 5 ? (
+              <H2 style={{ textAlign: "center", marginBottom: "30px" }}>
+                아이디는 5개까지 생성하실 수 있습니다.
+              </H2>
+            ) : null}
+            <Users>
+              {Object.keys(admin).map((user, i) => (
+                <User key={i}>
+                  <UserImg>
+                    <img
+                      src="./img/admin.png"
+                      alt="base_image"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </UserImg>
+                  <UserName>{user}</UserName>
+                </User>
+              ))}
+              {Object.keys(admin).length < 5 ? (
+                <User onClick={onClicked}>
+                  <PlusIcon>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        fill="white"
+                        d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 368C269.3 368 280 357.3 280 344V280H344C357.3 280 368 269.3 368 256C368 242.7 357.3 232 344 232H280V168C280 154.7 269.3 144 256 144C242.7 144 232 154.7 232 168V232H168C154.7 232 144 242.7 144 256C144 269.3 154.7 280 168 280H232V344C232 357.3 242.7 368 256 368z"
+                      />
+                    </svg>
+                  </PlusIcon>
+                  <UserName>프로필 추가</UserName>
+                </User>
+              ) : null}
+            </Users>
+          </UserBox>
+          <Link
+            to="/manageProfiles"
+            style={{
+              marginTop: "100px",
+              padding: "0px 50px",
+              border: "1px solid white",
+            }}
+          >
+            <DeleteBox>프로필 관리</DeleteBox>
+          </Link>
         </>
       ) : (
         <AddBoxForm
@@ -313,7 +324,7 @@ function Browse() {
           </ProfileBox>
           <div>
             <Bnt>저장</Bnt>
-            <Bnt onClick={onClicked}>취소</Bnt>
+            <Sbnt onClick={onClicked}>취소</Sbnt>
           </div>
         </AddBoxForm>
       )}
