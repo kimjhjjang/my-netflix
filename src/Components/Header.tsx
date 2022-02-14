@@ -224,7 +224,7 @@ function Header() {
   return (
     <Nav variants={navVariants} animate={navAnimation} initial={"top"}>
       <Col>
-        <Link to="/home">
+        <Link to="/">
           <Logo
             variants={logoVariants}
             whileHover="active"

@@ -103,7 +103,7 @@ const Loader = styled.div`
 `;
 
 const Banner = styled.div<{ bgphoto: string }>`
-  height: 70vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -351,12 +351,12 @@ function Tv() {
       ) : (
         <Container>
           <Banner
-            bgphoto={makeImagePath(toprate?.results[0].backdrop_path || "")}
+            bgphoto={makeImagePath(popular?.results[0].backdrop_path || "")}
           >
-            <Title>{toprate?.results[0].name}</Title>
-            <Overview>{toprate?.results[0].overview}</Overview>
+            <Title>{popular?.results[0].name}</Title>
+            <Overview>{popular?.results[0].overview}</Overview>
             <button
-              onClick={() => onBoxClicked(toprate?.results[0].id!)}
+              onClick={() => onBoxClicked(popular?.results[0].id!)}
               style={{
                 width: "100px",
                 height: "50px",
@@ -369,7 +369,7 @@ function Tv() {
             </button>
           </Banner>
           <TvList>
-            <H1>TV TOP-RATE</H1>
+            <H1>TV POPULAR</H1>
             <StyleBox>
               <MoveBox>
                 <MoveButton onClick={() => prevIndex(0)}>&larr;</MoveButton>
@@ -389,7 +389,7 @@ function Tv() {
                   transition={{ type: "tween", duration: 1 }}
                   key={tIndex}
                 >
-                  {toprate?.results
+                  {popular?.results
                     .slice(1)
                     .slice(offset * tIndex, offset * tIndex + offset)
                     .map((tv, i) => (
@@ -417,7 +417,7 @@ function Tv() {
               </AnimatePresence>
             </StyleBox>
 
-            <H1>TV POPULAR</H1>
+            <H1>TV TOP-RATE</H1>
             <StyleBox>
             <MoveBox>
                 <MoveButton onClick={() => prevIndex(1)}>&larr;</MoveButton>
@@ -434,7 +434,7 @@ function Tv() {
                   transition={{ type: "tween", duration: 1 }}
                   key={pIndex}
                 >
-                  {popular?.results
+                  {toprate?.results
                     .slice(offset * pIndex, offset * pIndex + offset)
                     .map((tv, i) => (
                       <Box
