@@ -25,11 +25,11 @@ function App() {
         <Route path="/manageProfiles">
           <ManageProfiles />
         </Route>
-        <Route path="/main">
-          <Main />
-        </Route>
-        <Route path={["/", "/movies/:movieId"]}>
+        <Route path={["/home","/movies/:movieId"]}>
           <Home />
+        </Route>
+        <Route path={["/" ]}>
+          <Main />
         </Route>
       </Switch>
       <Footer />
