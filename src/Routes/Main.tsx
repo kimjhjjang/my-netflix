@@ -168,6 +168,7 @@ function Main() {
             영화와 시리즈를 <br /> 무제한으로.
           </h1>
           <p>다양한 디바이스에서 시청하세요. 언제든 해지하실 수 있습니다.</p>
+          <p>넷플릭스 클론 페이지이며 이메일 주소를 입력하시면 접속하실 수 있습니다.</p>
           <Form onSubmit={handleSubmit(onValid)}>
                     <input
                     {...register("email",{
