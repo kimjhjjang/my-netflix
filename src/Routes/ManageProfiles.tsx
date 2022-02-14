@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { DragControls, motion } from "framer-motion";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -208,15 +208,23 @@ function ManageProfiles() {
   
   const [admin, setAdmin] = useRecoilState(adminState);
   const [user, setUser] = useState("");
+  
   const editUser = (userName: string) => {
     setUser(userName);
     setValue("name",userName);
     setValue("isUse",admin[userName][0].isUse);
     setValue("child",admin[userName][0].child);
   };
+
+  let del = "";
+  const onDel = (e:React.MouseEvent<HTMLButtonElement>) => {
+      del = e.currentTarget.value;
+      del && console.log(del); 
+  };
+  
+
   const { register, handleSubmit, setValue } = useForm<IUserProps>();
-  const onValids = ({ name, child , isUse }: IUserProps) => {
-   
+  const onValids = ({ name, child , isUse}: IUserProps) => {
     const data = {...admin};
     const newData = { [name] : [
           {id: Date.now(),
@@ -225,13 +233,11 @@ function ManageProfiles() {
         ] 
     }
     const result = Object.assign({}, data, newData);
-    delete result[user]
+    delete result[user];
 
     setAdmin(result);
     saveUsers(result);
     setUser("");
-
-    //setValue("name", "");
   };
   
   const onClicked = () => {
@@ -332,7 +338,7 @@ function ManageProfiles() {
               <div>
                 <Bnt>저장</Bnt>
                 <Bnt onClick={onClicked}>취소</Bnt>
-                <Bnt>프로필 삭제</Bnt>
+                <Bnt value="del" onClick={onDel}>프로필 삭제</Bnt>
               </div>
             </EditBoxForm>
       )}

@@ -3,6 +3,7 @@ import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import Browse from "./Routes/Browse";
 import Home from "./Routes/Home";
+import Main from "./Routes/Main";
 import ManageProfiles from "./Routes/ManageProfiles";
 import Search from "./Routes/Search";
 import Tv from "./Routes/Tv";
@@ -23,6 +24,9 @@ function App() {
         </Route>
         <Route path="/manageProfiles">
           <ManageProfiles />
+        </Route>
+        <Route path="/main">
+          <Main />
         </Route>
         <Route path={["/", "/movies/:movieId"]}>
           <Home />

@@ -213,18 +213,6 @@ function Browse() {
     setValue("name", "");
   };
 
-  const userDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setAdmin((allUsers) => {
-      const users = { ...allUsers };
-      delete users[value];
-      saveUsers(users);
-      return users;
-    });
-  };
-
   const onClicked = () => {
     setAddProfile((props) => !props);
   };
