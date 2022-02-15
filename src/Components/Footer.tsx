@@ -7,29 +7,64 @@ const Wrapper = styled.footer`
     justify-content : center;
 `;
 
-const FooterBox = styled.div`
-    width: 60%;
-    margin-top: 80px;
-    height: 80px;
-    border-top: 1px solid white;
-    padding:15px;
-    display : flex;
-    justify-content : Space-between;
+
+const Foot = styled.div`
+  max-width: 70%;
+  margin: 1rem auto;
+  overflow: auto;
+  p {
+    margin-bottom: 1.5rem;
+  }
+  li {
+    line-height: 1.9;
+  }
 `;
 
-const Copyright = styled.span`
-    line-height: 3;
+const FooterBox = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 2rem;
+  width: 50vw;
 `;
+
+
 
 
 function Footer () {
     return (
     <Wrapper>
-        <FooterBox>
-            <Copyright>
-                Copyright © 2022 All Rights Reserved by Clone-Netflix
-            </Copyright>
+         <Foot className="footer">
+        <p>고객 센터 1-866-579-7172</p>
+        <FooterBox className="footer-cols">
+          <ul>
+            <li>
+              <span>자주 묻는 질문</span>
+            </li>
+            <li>
+              <span>쿠키 설정</span>
+            </li>
+            
+          </ul>
+          <ul>
+            <li>
+              <span>고객 센터</span>
+            </li>
+            <li>
+              <span>회사 정보</span>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <span>이용 약관</span>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <span>개인정보</span>
+            </li>
+          </ul>
         </FooterBox>
+      </Foot>
     </Wrapper>
     )
 }

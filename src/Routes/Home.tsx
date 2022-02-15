@@ -13,6 +13,7 @@ import { makeImagePath } from "../utils";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Top10 from "../Components/Top10";
+import "../Common/main.css";
 
 const Wrapper = styled.div`
   background: black;
@@ -39,13 +40,15 @@ const Banner = styled.div<{ bgphoto: string }>`
 `;
 
 const Title = styled.h2`
-  font-size: 68px;
-  margin-bottom: 20px; ;
+  font-family: 'Black Han Sans', sans-serif !important;
+  font-size: 72px;
+  margin-bottom: 20px;
 `;
 
 const Overview = styled.p`
   font-size: 30px;
   width: 50%;
+  font-weight: 500;
 `;
 
 const Slider = styled.div`

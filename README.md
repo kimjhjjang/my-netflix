@@ -32,8 +32,11 @@
         
     6) npm i framer-motion
     7) npm i react-helmet
-
     8) npm i react-hook-form
+    9) npm i @fortawesome/fontawesome-svg-core
+    npm i @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-brands-svg-icons
+    npm i @fortawesome/react-fontawesome
+    폰트어썸 무료 폰트 설치 후 사용하기.
 
 # Getting Movies Poster API
 TheMovieDB API Key
@@ -44,6 +47,17 @@ https://developers.themoviedb.org/3/movies/get-now-playing
 
 TheMovieDB Image가져오기
 이미지 파일명 앞에 https://image.tmdb.org/t/p/original/ 붙이기
+
+# login server
+npm i firebase@9.6.1 설치 해당 버전 사용하려면 router-dom 5.3이 설치되어 있어야 함.
+신규버전으로 할 경우 Router v6버전에서만 호환됨
+
+# Auth 인증하기
+   1. firebase Auth 웹 생성
+   2. 생성된 코드 제일 바깥쪽에 fbase.js 만들어서 붙여넣기
+   3. Auth 구글, 깃헙 추가.
+   4. 깃헙 추가시 깃헙 - setting - dev setting - auth add 에서 추가
+
 
 
 # add Task

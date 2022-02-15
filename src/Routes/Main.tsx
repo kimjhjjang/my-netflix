@@ -10,7 +10,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const Header = styled.header`
+const Content = styled.div`
   width: 100%;
   height: 80vh;
   position: relative;
@@ -130,29 +130,11 @@ const ErrorText = styled.span`
     color : #ffa00a;
     font-size: 18px;
     font-weight: 500;
-`
-
-const Footer = styled.div`
-  max-width: 70%;
-  margin: 1rem auto;
-  overflow: auto;
-  p {
-    margin-bottom: 1.5rem;
-  }
-  li {
-    line-height: 1.9;
-  }
-`;
-
-const FooterBox = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 2rem;
 `;
 
 interface IEmail {
-    email : string;
-}
+  email : string;
+};
 
 function Main() {
     const {register, handleSubmit, formState:{errors}} = useForm<IEmail>();
@@ -162,13 +144,13 @@ function Main() {
     }
   return (
     <Container>
-      <Header className="showcase">
-        <Showcase className="showcase-content">
+      <Content>
+        <Showcase>
           <h1>
             영화와 시리즈를 <br /> 무제한으로.
           </h1>
-          <p>다양한 디바이스에서 시청하세요. 언제든 해지하실 수 있습니다.</p>
-          <p>넷플릭스 클론 페이지이며 이메일 주소를 입력하시면 접속하실 수 있습니다.</p>
+          <p>해당 페이지는 React로 제작되었습니다.</p>
+          <p>넷플릭스 클론 사이트이며 이메일 주소를 입력하시면 접속하실 수 있습니다.</p>
           <Form onSubmit={handleSubmit(onValid)}>
                     <input
                     {...register("email",{
@@ -182,12 +164,12 @@ function Main() {
                             message : "이메일 주소를 입력해 주세요."
                         }
                     }) } type="text" />
-                    <label className="input_label">이메일 주소</label>
+                    <label>이메일 주소</label>
                     <StartBtn>시작하기</StartBtn>
                     <ErrorText>{errors?.email?.message}</ErrorText>
                 </Form>
         </Showcase>
-      </Header>
+      </Content>
 
       <Section>
         <TextBox>
@@ -235,70 +217,6 @@ function Main() {
         </TextBox>
       </Section>
 
-      <Footer className="footer">
-        <p>Questions? Call 1-866-579-7172</p>
-        <FooterBox className="footer-cols">
-          <ul>
-            <li>
-              <span>FAQ</span>
-            </li>
-            <li>
-              <span>Investor Relations</span>
-            </li>
-            <li>
-              <span>Ways To Watch</span>
-            </li>
-            <li>
-              <span>Corporate Information</span>
-            </li>
-            <li>
-              <span>Netflix Originals</span>
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <span>Help Center</span>
-            </li>
-            <li>
-              <span>Jobs</span>
-            </li>
-            <li>
-              <span>Terms Of Use</span>
-            </li>
-            <li>
-              <span>Contact Us</span>
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <span>Account</span>
-            </li>
-            <li>
-              <span>Redeem Gift Cards</span>
-            </li>
-            <li>
-              <span>Privacy</span>
-            </li>
-            <li>
-              <span>Speed Test</span>
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <span>Media Center</span>
-            </li>
-            <li>
-              <span>Buy Gift Cards</span>
-            </li>
-            <li>
-              <span>Cookie Preferences</span>
-            </li>
-            <li>
-              <span>Legal Notices</span>
-            </li>
-          </ul>
-        </FooterBox>
-      </Footer>
     </Container>
   );
 }

@@ -337,7 +337,7 @@ function Header() {
        </Account>
      </Search> 
        : 
-        <Link to="/home"><Login>로그인</Login></Link> 
+        <Link to="/login"><Login>로그인</Login></Link> 
        }
       </Col>
     </Nav>
