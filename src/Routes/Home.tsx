@@ -323,7 +323,7 @@ function Home() {
     bigMovieMatch?.params.movieId &&
     totalMovie!.find((movie) => movie.id === +bigMovieMatch.params.movieId);
 
-  const onOverlayClick = () => history.push("/");
+  const onOverlayClick = () => history.push("/home");
 
   return (
     <Wrapper>

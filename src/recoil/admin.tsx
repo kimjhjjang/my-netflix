@@ -1,19 +1,8 @@
 import { atom } from "recoil";
+import { loadUsers } from "utils";
 
-// 로컬 스토리지 저장
-export const LOCALSTORAGE = 'ADMIN';
 
-export const loadUsers = () => {
-    const localUsers = localStorage.getItem(LOCALSTORAGE);
-    if (localUsers) {
-        return JSON.parse(localUsers);
-    }
-    return null;
-};
-
-export const saveUsers = (users: IAdminState) => {
-    localStorage.setItem(LOCALSTORAGE, JSON.stringify(users));
-};
+// 
 
 
 export interface IAdmin {

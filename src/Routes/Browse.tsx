@@ -1,10 +1,12 @@
+import { dbService } from "fbase";
+import { addDoc, collection } from "firebase/firestore";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { profileSelector, profileState } from "recoil/profiles";
 import styled from "styled-components";
-import { adminState, saveUsers } from "../recoil/admin";
 
 const Container = styled.div`
   width: 100%;
@@ -193,22 +195,30 @@ interface IUserProps {
   child: boolean;
 }
 
-function Browse() {
-  const [admin, setAdmin] = useRecoilState(adminState);
+function Browse({currentUser}:any) {
+  
+
+  const setProfiles = useSetRecoilState(profileState);
+    const profiles = useRecoilValue(profileSelector);
+  
   const [addProfile, setAddProfile] = useState(true);
   const { register, handleSubmit, setValue } = useForm<IUserProps>();
-  const onValid = ({ name, child }: IUserProps) => {
-    const newAdmin = {
-      id: Date.now(),
-      isUse: true,
-      child: child,
+
+  // 프로필
+  const onValid = async ({ name, child }: IUserProps) => {
+    const currentUserId = currentUser.uid;
+    const newData = {
+      userId: currentUserId,
+      createAt: Date.now(),
+      name,
+      child,
     };
-    const data = {
-      ...admin,
-      [name]: [newAdmin],
-    };
-    setAdmin(data);
-    saveUsers(data);
+    await addDoc(collection(dbService, "profile"), newData);
+
+    setProfiles((prev)=> [
+      ...prev,
+      newData as any
+    ]);
     setAddProfile(true);
     setValue("name", "");
   };
@@ -216,6 +226,7 @@ function Browse() {
   const onClicked = () => {
     setAddProfile((props) => !props);
   };
+  
 
   return (
     <Container>
@@ -223,13 +234,13 @@ function Browse() {
         <>
           <UserBox variants={useVariants} initial="init" animate="animate">
             <H1>넷플릭스를 시청할 프로필을 선택하세요.</H1>
-            {Object.keys(admin).length >= 5 ? (
+            {profiles.length >= 5 ? (
               <H2 style={{ textAlign: "center", marginBottom: "30px" }}>
                 아이디는 5개까지 생성하실 수 있습니다.
               </H2>
             ) : null}
             <Users>
-              {Object.keys(admin).map((user, i) => (
+              {profiles.map((profile, i) => (
                 <User key={i}>
                   <UserImg>
                     <img
@@ -238,10 +249,11 @@ function Browse() {
                       style={{ width: "100%", height: "100%" }}
                     />
                   </UserImg>
-                  <UserName>{user}</UserName>
+                  <UserName>{profile.name}</UserName>
                 </User>
               ))}
-              {Object.keys(admin).length < 5 ? (
+              
+              {profiles.length < 5 ? (
                 <User onClick={onClicked}>
                   <PlusIcon>
                     <svg

@@ -1,10 +1,12 @@
-import { DragControls, motion } from "framer-motion";
+import { dbService } from "fbase";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import {  motion } from "framer-motion";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
+import { profileSelector } from "recoil/profiles";
 import styled from "styled-components";
-import { adminState, saveUsers } from "../recoil/admin";
 
 
 const Container = styled.div`
@@ -152,7 +154,7 @@ const H2 = styled.h2`
   margin-top: 1vh;
 `;
 
-const Bnt = styled.button`
+const Bnt = styled.span`
   display: inline-block;
   margin-right: 20px;
   font-size: 1.2vw;
@@ -201,57 +203,61 @@ const EditCheckBox = styled.div``;
 interface IUserProps {
   name: string;
   child: boolean;
-  isUse: boolean;
-}
+};
 
 function ManageProfiles() {
+   // Profile data
+   const profiles = useRecoilValue(profileSelector);
+  //const [admin, setAdmin] = useRecoilState(adminState);
+  const [profileId, setProfileId] = useState("");
   
-  const [admin, setAdmin] = useRecoilState(adminState);
-  const [user, setUser] = useState("");
-  
-  const editUser = (userName: string) => {
-    setUser(userName);
-    setValue("name",userName);
-    setValue("isUse",admin[userName][0].isUse);
-    setValue("child",admin[userName][0].child);
+  const editUser = (profileId: string, name:string, child :boolean) => {
+    setProfileId(profileId);
+    setValue("name",name);
+    setValue("child",child);
   };
 
-  let del = "";
-  const onDel = (e:React.MouseEvent<HTMLButtonElement>) => {
-      del = e.currentTarget.value;
-      del && console.log(del); 
-  };
+  const onDeleteClick = async () => {
+    const ok = window.confirm("프로필을 삭제 하시겠습니까?");
+        //리터럴
+        if (ok) {
+            //삭제
+            await deleteDoc(doc(dbService, "profile", profileId));
+            setProfileId("");
+            //await deleteObject(ref(storageService,nweetObj.attachmentUrl));
+        }
+    }
   
-
   const { register, handleSubmit, setValue } = useForm<IUserProps>();
-  const onValids = ({ name, child , isUse}: IUserProps) => {
-    const data = {...admin};
+  const onValids = async ({ name, child }: IUserProps) => {
+    /* const data = {...admin};
     const newData = { [name] : [
           {id: Date.now(),
-            isUse: isUse,
             child: child,}
         ] 
     }
     const result = Object.assign({}, data, newData);
-    delete result[user];
+    delete result[profile]; */
+    const profileUpdateText = doc(dbService,"profile", profileId);
+    await updateDoc(profileUpdateText, {name});
 
-    setAdmin(result);
-    saveUsers(result);
-    setUser("");
+    //setAdmin(result);
+    setProfileId("");
   };
   
   const onClicked = () => {
-    setUser("");
+    setProfileId("");
   };
+
   return (
     <Container>
-      {user === "" ? (
+      {profileId === "" ? (
         <>
           <UserBox>
             <H1>프로필 관리</H1>
             <Users variants={userVariants} initial="init" animate="animate">
-              {Object.keys(admin).map((user, i) => (
-                <User key={i} onClick={() => editUser(user)}>
+              {profiles.map((profile, i) => (
+                <User key={i} onClick={() => editUser(profile.profileId,profile.name,profile.child)}>
                   <UserImg>
                     <UserEdit>
                       <EditIcon
@@ -270,7 +276,7 @@ function ManageProfiles() {
                       style={{ width: "100%", height: "100%" }}
                     />
                   </UserImg>
-                  <UserName>{user}</UserName>
+                  <UserName>{profile.name}</UserName>
                 </User>
               ))}
             </Users>
@@ -293,7 +299,7 @@ function ManageProfiles() {
               initial="init"
               animate="animate"
             >
-              <H1>프로필 변경({user})</H1>
+              <H1>프로필 변경({profileId})</H1>
               <ProfileBox>
                 <ModifyProfile>
                   <div>
@@ -323,12 +329,6 @@ function ManageProfiles() {
                           {...register("child")}
                         />
                         <label htmlFor="child">&nbsp;어린이</label>
-                        <ChildInput
-                          type="checkbox"
-                          id="isUse"
-                          {...register("isUse")}
-                        />
-                        <label htmlFor="isUse">&nbsp;사용 여부</label>
                       </CHeckBox>
                     </EditCheckBox>
                 
@@ -338,7 +338,7 @@ function ManageProfiles() {
               <div>
                 <Bnt>저장</Bnt>
                 <Bnt onClick={onClicked}>취소</Bnt>
-                <Bnt value="del" onClick={onDel}>프로필 삭제</Bnt>
+                <Bnt onClick={onDeleteClick}>프로필 삭제</Bnt>
               </div>
             </EditBoxForm>
       )}

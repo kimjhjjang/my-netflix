@@ -1,17 +1,10 @@
-import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import {
-  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   getAuth,
-  GoogleAuthProvider,
-  GithubAuthProvider,
-  signInWithPopup
 } from "firebase/auth";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { authService } from "fbase";
 
 const Container = styled.div`
   position: relative;
@@ -97,30 +90,6 @@ const LoginButton = styled.button`
   font-weight: 600;
 `;
 
-const LoginCheck = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  font-size: 14px;
-  color: grey;
-  margin-top: 10px;
-`;
-
-const LoginType = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  i {
-    width: 30px;
-    height: 30px;
-    margin: 30px 0px;
-    cursor: pointer;
-    &:first-child {
-      margin-right: 20px;
-    }
-  }
-`;
 
 const EmailBox = styled.div`
   height: 100px;
@@ -131,8 +100,6 @@ const PasswordBox = styled.div`
   height: 100px;
   position: relative;
 `;
-
-const SignIn = styled.div``;
 
 const ErrorText = styled.span`
   color: #ffa00a;
@@ -145,8 +112,7 @@ interface ILogin {
   password: string;
 }
 
-
-function Login() {
+function Signup() {
   const {
     register,
     handleSubmit,
@@ -154,40 +120,20 @@ function Login() {
   } = useForm<ILogin>();
   const [error, setError] = useState("");
   const onValid = async ({ email, password }: ILogin) => {
-    // create Login
       const auth = getAuth();
-        //login
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            await createUserWithEmailAndPassword(auth, email, password);
         } catch (error) {
             setError(error+"");
         }
   };
 
 
-  const onSocialClick = async (e:string) => {
-    let provider;
-    try {
-      if(e ==="google"){
-        provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(authService, provider);
-         GoogleAuthProvider.credentialFromResult(result);
-      }else if(e ==="github"){
-        provider = new GithubAuthProvider();
-        const result = await signInWithPopup(authService, provider);
-         GithubAuthProvider.credentialFromResult(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-
   return (
     <Container>
       <Content>
         <LoginBox>
-          <H1>로그인</H1>
+          <H1>회원 가입</H1>
           <Form onSubmit={handleSubmit(onValid)}>
             <EmailBox>
               <input
@@ -222,28 +168,9 @@ function Login() {
               <label>비밀번호</label>
               <ErrorText>{errors?.password?.message}</ErrorText>
             </PasswordBox>
-            <LoginButton>로그인</LoginButton>
+            <LoginButton>회원 가입</LoginButton>
           </Form>
-          <LoginCheck>
-            <div>
-              <input type="checkbox" id="loginSave" />
-              <label htmlFor="loginSave" aria-label="로그인 정보 저장">
-                로그인 저장
-              </label>
-            </div>
-            <p>도움이 필요하신가요?</p>
-          </LoginCheck>
-          <LoginType>
-            <i onClick={() => onSocialClick("google")}>
-              <FontAwesomeIcon icon={faGoogle} size="2x" />
-            </i>
-            <i onClick={() => onSocialClick("github")}>
-              <FontAwesomeIcon icon={faGithub} size="2x" />
-            </i>
-          </LoginType>
-          <SignIn>
-            <p>Netflix 회원이 아닌가요? <Link to="/signup">지금 가입하세요</Link></p>
-          </SignIn>
+          
           {error && <span className="authError">{error}</span>}
         </LoginBox>
       </Content>
@@ -251,4 +178,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;
