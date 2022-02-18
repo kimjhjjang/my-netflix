@@ -83,6 +83,7 @@ const ImgBox = styled.div``;
 
 const Form = styled.form`
   display: flex;
+  justify-content: center;
   position: relative;
   width: 38vw;
   input {
@@ -145,7 +146,7 @@ function Main({isLoggedIn}:IProps) {
     const {register, handleSubmit, formState:{errors}} = useForm<IEmail>();
     const history = useHistory();
     const onValid = ({email} : IEmail) => {
-        history.push("/home");
+        history.push("/login");
     }
   return (
     <Container>
@@ -160,7 +161,7 @@ function Main({isLoggedIn}:IProps) {
             <p> <span style={{fontWeight:"600", color:"tomato"}}>{authService.currentUser?.email}</span> 님 반갑습니다.</p>
           :
             <Form onSubmit={handleSubmit(onValid)}>
-            <input
+            {/* <input
             {...register("email",{
                 required : "이메일 주소를 입력해 주세요." ,
                 pattern:{
@@ -172,10 +173,11 @@ function Main({isLoggedIn}:IProps) {
                     message : "이메일 주소를 입력해 주세요."
                 }
             }) } type="text" />
-            <label>이메일 주소</label>
+            <label>이메일 주소</label> */}
             <StartBtn>시작하기</StartBtn>
-            <ErrorText>{errors?.email?.message}</ErrorText>
+            {/* <ErrorText>{errors?.email?.message}</ErrorText> */}
         </Form>
+          
           }
           
         </Showcase>
