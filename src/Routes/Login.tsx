@@ -134,6 +134,20 @@ const PasswordBox = styled.div`
 
 const SignIn = styled.div``;
 
+const SignInText = styled.p`
+  width: 100%;
+  text-align: center;
+  line-height: 2.3;
+  background-color: tomato;
+  color: white;
+  height: 50px;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 30px;
+`;
+
+
 const ErrorText = styled.span`
   color: #ffa00a;
   font-size: 14px;
@@ -144,6 +158,7 @@ interface ILogin {
   email: string;
   password: string;
 }
+
 
 
 function Login() {
@@ -242,7 +257,8 @@ function Login() {
             </i>
           </LoginType>
           <SignIn>
-            <p>Netflix 회원이 아닌가요? <Link to="/signup">지금 가입하세요</Link></p>
+            <p>로그인 후 서비스를 이용하실 수 있습니다.</p>
+          <Link to="/signup"><SignInText>회원 가입하기</SignInText></Link>
           </SignIn>
           {error && <span className="authError">{error}</span>}
         </LoginBox>

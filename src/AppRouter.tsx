@@ -33,7 +33,7 @@ function AppRouter({ isLoggedIn, currentUser, isProfiles, selectedProfile }: any
               <Home />
             </Route>
             <Route path="/signup">
-              <Signup />
+              <Signup isLoggedIn={isLoggedIn}/>
             </Route>
             <Route path={["/"]}>
               <Main isLoggedIn={isLoggedIn}/>
@@ -45,7 +45,7 @@ function AppRouter({ isLoggedIn, currentUser, isProfiles, selectedProfile }: any
               <Login />
             </Route>
             <Route path="/signup">
-              <Signup />
+              <Signup isLoggedIn={isLoggedIn} />
             </Route>
             <Route path={["/"]}>
               <Main isLoggedIn={isLoggedIn}/>

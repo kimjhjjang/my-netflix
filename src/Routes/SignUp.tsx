@@ -5,6 +5,8 @@ import {
   getAuth,
 } from "firebase/auth";
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { authService } from "fbase";
 
 const Container = styled.div`
   position: relative;
@@ -47,11 +49,20 @@ const LoginBox = styled.div`
   background-color: rgba(0, 0, 0, 0.9);
   padding: 60px;
 `;
+
 const H1 = styled.h1`
   width: 100%;
   font-size: 32px;
   font-weight: bold;
   margin-bottom: 30px;
+`;
+
+const HH1 = styled.h1`
+  width: 100%;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
 `;
 
 const Form = styled.form`
@@ -106,23 +117,45 @@ const ErrorText = styled.span`
   font-size: 14px;
   font-weight: 500;
 `;
+const SignIn = styled.div`
+  min-width: 400px;
+  text-align: center;
+  margin-top: 30px;
+`;
+
+const CompleteSignUp = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 60px;
+`;
+
 
 interface ILogin {
   email: string;
   password: string;
 }
 
-function Signup() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ILogin>();
+interface IProps {
+  isLoggedIn : boolean
+}
+
+function Signup({isLoggedIn}: IProps) {
+  const history = useHistory();
+  const [isSignUp, setIsSignUp] = useState(false);
+  const { register, handleSubmit,formState: { errors },} = useForm<ILogin>();
   const [error, setError] = useState("");
   const onValid = async ({ email, password }: ILogin) => {
       const auth = getAuth();
         try {
             await createUserWithEmailAndPassword(auth, email, password);
+            setIsSignUp(true);
+            setTimeout(() => {
+              history.push("/home");
+            }, 5000)
         } catch (error) {
             setError(error+"");
         }
@@ -132,7 +165,20 @@ function Signup() {
   return (
     <Container>
       <Content>
-        <LoginBox>
+      {isLoggedIn ? 
+      <CompleteSignUp>
+        <HH1>
+          축하합니다!
+        </HH1>
+          <HH1>
+            <span style={{color:"tomato"}}>{authService.currentUser?.email}</span> 님 회원 가입이 완료되었습니다.
+          </HH1>
+          <H1 style={{textAlign:"center", marginTop:"50px"}}>
+            잠시후 my-netfilx 홈페이지로 이동합니다.
+          </H1>
+      </CompleteSignUp>
+      :
+      <LoginBox>
           <H1>회원 가입</H1>
           <Form onSubmit={handleSubmit(onValid)}>
             <EmailBox>
@@ -172,7 +218,15 @@ function Signup() {
           </Form>
           
           {error && <span className="authError">{error}</span>}
+
+          <SignIn>
+            <p>이메일과 비밀번호를 통한 회원가입이 가능합니다.</p>
+         </SignIn>
+
         </LoginBox>
+      }
+        
+        
       </Content>
     </Container>
   );
