@@ -1,12 +1,12 @@
-import { dbService } from "fbase";
-import { addDoc, collection } from "firebase/firestore";
+import { dbService, storageService } from "fbase";
+import { addDoc, collection  } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { profileSelector, profileState } from "recoil/profiles";
 import styled from "styled-components";
+import { v4 as uuidv4 } from "uuid";
 
 const Container = styled.div`
   width: 100%;
@@ -195,30 +195,52 @@ interface IUserProps {
   child: boolean;
 }
 
-function Browse({currentUser}:any) {
-  
+interface IProps {
+  currentUser : any;
+  isProfiles : any[];
+}
 
-  const setProfiles = useSetRecoilState(profileState);
-    const profiles = useRecoilValue(profileSelector);
-  
+function Browse({ currentUser , isProfiles}: IProps) {
+  const [attachment, setAttachment] = useState("");
+  //const setProfiles = useSetRecoilState(profileState);
+  //const profiles = useRecoilValue(profileSelector);
+
   const [addProfile, setAddProfile] = useState(true);
   const { register, handleSubmit, setValue } = useForm<IUserProps>();
 
-  // 프로필
+  // 프로필 추가
   const onValid = async ({ name, child }: IUserProps) => {
     const currentUserId = currentUser.uid;
+    let attachmentUrl = "";
+    if (attachment !== "") {
+      try {
+        //파일 경로 참조 만들기
+        const attachmenRef = ref(
+          storageService,
+          `${currentUser.uid}/${uuidv4()}`
+        );
+        //storage 참조 경로로 파일 업로드 하기
+        const uploadFile = await uploadString(
+          attachmenRef,
+          attachment,
+          "data_url"
+        );
+        //storage에 있는 파일 URL로 다운로드 받기
+        attachmentUrl = await getDownloadURL(uploadFile.ref);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     const newData = {
       userId: currentUserId,
       createAt: Date.now(),
       name,
       child,
+      attachmentUrl,
     };
-    await addDoc(collection(dbService, "profile"), newData);
 
-    setProfiles((prev)=> [
-      ...prev,
-      newData as any
-    ]);
+    await addDoc(collection(dbService, "profile"), newData);
+    //setProfiles((prev) => [...prev, newData as any]);
     setAddProfile(true);
     setValue("name", "");
   };
@@ -226,7 +248,23 @@ function Browse({currentUser}:any) {
   const onClicked = () => {
     setAddProfile((props) => !props);
   };
-  
+
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { files },
+    } = event;
+    if (!files) return;
+    const thefile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent: any) => {
+      console.log(finishedEvent);
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(thefile);
+  };
 
   return (
     <Container>
@@ -234,26 +272,36 @@ function Browse({currentUser}:any) {
         <>
           <UserBox variants={useVariants} initial="init" animate="animate">
             <H1>넷플릭스를 시청할 프로필을 선택하세요.</H1>
-            {profiles.length >= 5 ? (
+            {isProfiles.length >= 5 ? (
               <H2 style={{ textAlign: "center", marginBottom: "30px" }}>
                 아이디는 5개까지 생성하실 수 있습니다.
               </H2>
             ) : null}
             <Users>
-              {profiles.map((profile, i) => (
+              {isProfiles.map((profile, i) => (
                 <User key={i}>
-                  <UserImg>
-                    <img
-                      src="./img/admin.png"
-                      alt="base_image"
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </UserImg>
+                  {profile.attachmentUrl !== "" ? (
+                    <UserImg>
+                      <img
+                        src={profile.attachmentUrl}
+                        alt="base_image"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </UserImg>
+                  ) : (
+                    <UserImg>
+                      <img
+                        src="./img/admin.png"
+                        alt="base_image"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </UserImg>
+                  )}
                   <UserName>{profile.name}</UserName>
                 </User>
               ))}
-              
-              {profiles.length < 5 ? (
+
+              {isProfiles.length < 5 ? (
                 <User onClick={onClicked}>
                   <PlusIcon>
                     <svg
@@ -296,13 +344,24 @@ function Browse({currentUser}:any) {
           <ProfileBox>
             <ModifyProfile>
               <div>
-                <UserImg>
-                  <img
-                    src="./img/admin.png"
-                    alt="base_image"
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                </UserImg>
+                <input type="file" accept="image/*" onChange={onFileChange} />
+                {attachment !== "" ? (
+                  <UserImg>
+                    <img
+                      src={attachment}
+                      alt=""
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </UserImg>
+                ) : (
+                  <UserImg>
+                    <img
+                      src="./img/admin.png"
+                      alt="base_image"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </UserImg>
+                )}
               </div>
               <AddBox>
                 <AddInput

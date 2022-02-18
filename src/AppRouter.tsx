@@ -10,10 +10,10 @@ import ManageProfiles from "./Routes/ManageProfiles";
 import Search from "./Routes/Search";
 import Tv from "./Routes/Tv";
 
-function AppRouter({ isLoggedIn, currentUser }: any) {
+function AppRouter({ isLoggedIn, currentUser, isProfiles }: any) {
   return (
     <Router basename={process.env.PUBLIC_URL}>
-      <Header isLoggedIn={(isLoggedIn)}/>
+      <Header isLoggedIn={(isLoggedIn)} isProfiles={isProfiles}/>
       
         {isLoggedIn ? (
           <Switch>
@@ -24,10 +24,10 @@ function AppRouter({ isLoggedIn, currentUser }: any) {
               <Search />
             </Route>
             <Route path="/browse">
-              <Browse currentUser={currentUser}/>
+              <Browse currentUser={currentUser} isProfiles={isProfiles}/>
             </Route>
             <Route path="/manageProfiles">
-              <ManageProfiles/>
+              <ManageProfiles currentUser={currentUser} isProfiles={isProfiles} />
             </Route>
             <Route path={["/home", "/movies/:movieId"]}>
               <Home />

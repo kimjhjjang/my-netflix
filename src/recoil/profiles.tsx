@@ -1,24 +1,15 @@
 import { authService } from "fbase";
-import { atom, selector } from "recoil";
+import { atom } from "recoil";
 
-
-export interface IProfiles {
-    profileId : string;
-    userId: string;
-    name : string;
-    child : boolean;
-    createAt : number
+export interface ISelectedProfile {
+    selectedProfile : string;
 }
 
-export const profileState = atom<IProfiles[]>({
-    key: "profiles",
-    default: [] as IProfiles[]
- });
+export const defaultProfile:ISelectedProfile = {
+    selectedProfile : authService.currentUser?.displayName+""
+}
 
-export const profileSelector = selector({
-    key: "profilesSelector",
-    get: ({get}) => {
-        const profiles = get(profileState);
-        return profiles.filter((profile) => profile.userId === authService.currentUser?.uid )
-    }
+export const selectProfile = atom<ISelectedProfile>({
+    key: "selectProfile",
+    default : defaultProfile
 })

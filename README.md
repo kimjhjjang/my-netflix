@@ -37,6 +37,8 @@
     npm i @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-brands-svg-icons
     npm i @fortawesome/react-fontawesome
     폰트어썸 무료 폰트 설치 후 사용하기.
+    10) npm i uuid 랜덤한 uuid를 생성해줌
+        npm i --save-dev @types/uuid
 
 # Getting Movies Poster API
 TheMovieDB API Key

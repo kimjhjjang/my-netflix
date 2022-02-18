@@ -1,13 +1,17 @@
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import {  motion } from "framer-motion";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadString,
+} from "firebase/storage";
+import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { profileSelector } from "recoil/profiles";
 import styled from "styled-components";
-
+import { v4 as uuidv4 } from "uuid";
 
 const Container = styled.div`
   width: 100%;
@@ -154,6 +158,22 @@ const H2 = styled.h2`
   margin-top: 1vh;
 `;
 
+const SaveBnt = styled.button`
+  display: inline-block;
+  margin-right: 20px;
+  font-size: 1.2vw;
+  border: 1px solid grey;
+  padding: 0.5em 1.5em;
+  letter-spacing: 2px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  font-weight: 700;
+  &:hover {
+    background-color: tomato;
+  }
+`;
+
 const Bnt = styled.span`
   display: inline-block;
   margin-right: 20px;
@@ -165,10 +185,6 @@ const Bnt = styled.span`
   background-color: black;
   color: white;
   font-weight: 700;
-  &:first-child {
-    background-color: white;
-    color: black;
-  }
   &:hover {
     background-color: tomato;
   }
@@ -203,50 +219,93 @@ const EditCheckBox = styled.div``;
 interface IUserProps {
   name: string;
   child: boolean;
-};
+}
 
-function ManageProfiles() {
-   // Profile data
-   const profiles = useRecoilValue(profileSelector);
-  //const [admin, setAdmin] = useRecoilState(adminState);
+interface IProps {
+  currentUser: any;
+  isProfiles: any[];
+}
+
+function ManageProfiles({ currentUser, isProfiles }: IProps) {
+  // Profile data
   const [profileId, setProfileId] = useState("");
-  
-  const editUser = (profileId: string, name:string, child :boolean) => {
+  const [attachment, setAttachment] = useState("");
+  const [attachUrl, setAttachUrl] = useState("");
+
+  const editUser = (
+    userId: string,
+    name: string,
+    child: boolean,
+    attachmentUrl: string,
+    profileId: string
+  ) => {
+    setAttachUrl(attachmentUrl);
     setProfileId(profileId);
-    setValue("name",name);
-    setValue("child",child);
+    setValue("name", name);
+    setValue("child", child);
   };
 
   const onDeleteClick = async () => {
     const ok = window.confirm("프로필을 삭제 하시겠습니까?");
-        //리터럴
-        if (ok) {
-            //삭제
-            await deleteDoc(doc(dbService, "profile", profileId));
-            setProfileId("");
-            //await deleteObject(ref(storageService,nweetObj.attachmentUrl));
-        }
+    //리터럴
+    if (ok) {
+      //삭제
+      await deleteDoc(doc(dbService, "profile", profileId));
+      if (attachUrl !== "") {
+        await deleteObject(ref(storageService, attachUrl));
+      }
+      setProfileId("");
     }
-  
-  const { register, handleSubmit, setValue } = useForm<IUserProps>();
-  const onValids = async ({ name, child }: IUserProps) => {
-    /* const data = {...admin};
-    const newData = { [name] : [
-          {id: Date.now(),
-            child: child,}
-        ] 
-    }
-    const result = Object.assign({}, data, newData);
-    delete result[profile]; */
-    const profileUpdateText = doc(dbService,"profile", profileId);
-    await updateDoc(profileUpdateText, {name});
-
-    //setAdmin(result);
-    setProfileId("");
   };
-  
+
+  const { register, handleSubmit, setValue } = useForm<IUserProps>();
+  //  프로필 수정하기
+  const onValids = async ({ name, child }: IUserProps) => {
+    let attachmentUrl = "";
+    if (attachment !== "") {
+      try {
+        //파일 경로 참조 만들기
+        const attachmenRef = ref(
+          storageService,
+          `${currentUser.uid}/${uuidv4()}`
+        );
+        //storage 참조 경로로 파일 업로드 하기
+        const uploadFile = await uploadString(
+          attachmenRef,
+          attachment,
+          "data_url"
+        );
+        //storage에 있는 파일 다운로드 URL받기
+        attachmentUrl = await getDownloadURL(uploadFile.ref);
+        const profileUpdateText = doc(dbService, "profile", profileId);
+        await updateDoc(profileUpdateText, { name, attachmentUrl });
+        //setProfiles(resetProfile as any);
+        setProfileId("");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   const onClicked = () => {
     setProfileId("");
+    setAttachment("");
+  };
+
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { files },
+    } = event;
+    if (!files) return;
+    const thefile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent: any) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(thefile);
   };
 
   return (
@@ -256,8 +315,19 @@ function ManageProfiles() {
           <UserBox>
             <H1>프로필 관리</H1>
             <Users variants={userVariants} initial="init" animate="animate">
-              {profiles.map((profile, i) => (
-                <User key={i} onClick={() => editUser(profile.profileId,profile.name,profile.child)}>
+              {isProfiles.map((profile, i) => (
+                <User
+                  key={i}
+                  onClick={() =>
+                    editUser(
+                      profile.userId,
+                      profile.name,
+                      profile.child,
+                      profile.attachmentUrl,
+                      profile.id
+                    )
+                  }
+                >
                   <UserImg>
                     <UserEdit>
                       <EditIcon
@@ -270,11 +340,19 @@ function ManageProfiles() {
                         />
                       </EditIcon>
                     </UserEdit>
-                    <img
-                      src="./img/admin.png"
-                      alt="base_image"
-                      style={{ width: "100%", height: "100%" }}
-                    />
+                    {profile.attachmentUrl !== "" ? (
+                      <img
+                        src={profile.attachmentUrl}
+                        alt="base_image"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    ) : (
+                      <img
+                        src="./img/admin.png"
+                        alt="base_image"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    )}
                   </UserImg>
                   <UserName>{profile.name}</UserName>
                 </User>
@@ -293,54 +371,64 @@ function ManageProfiles() {
           </Link>
         </>
       ) : (
-            <EditBoxForm
-              onSubmit={handleSubmit(onValids)}
-              variants={userVariants}
-              initial="init"
-              animate="animate"
-            >
-              <H1>프로필 변경({profileId})</H1>
-              <ProfileBox>
-                <ModifyProfile>
-                  <div>
-                    <UserImg>
-                      <img
-                        src="./img/admin.png"
-                        alt="base_image"
-                        style={{ width: "100%", height: "100%" }}
-                      />
-                    </UserImg>
-                  </div>
-                  <AddBox>
-                    <EditInputBox>
-                      <AddInput
-                        {...register("name", { required: true })}
-                        type="text"
-                        id="add-profile-name"
-                        placeholder="이름"
-                      />
-                    </EditInputBox>
-                    <EditCheckBox>
-                      <H2>옵션 설정</H2>
-                      <CHeckBox>
-                        <ChildInput
-                          type="checkbox"
-                          id="child"
-                          {...register("child")}
-                        />
-                        <label htmlFor="child">&nbsp;어린이</label>
-                      </CHeckBox>
-                    </EditCheckBox>
-                
-                  </AddBox>
-                </ModifyProfile>
-              </ProfileBox>
+        <EditBoxForm
+          onSubmit={handleSubmit(onValids)}
+          variants={userVariants}
+          initial="init"
+          animate="animate"
+        >
+          <H1>프로필 변경</H1>
+          <ProfileBox>
+            <ModifyProfile>
               <div>
-                <Bnt>저장</Bnt>
-                <Bnt onClick={onClicked}>취소</Bnt>
-                <Bnt onClick={onDeleteClick}>프로필 삭제</Bnt>
+                <input type="file" accept="image/*" onChange={onFileChange} />
+                {attachment !== "" ? (
+                  <UserImg>
+                    <img
+                      src={attachment}
+                      alt=""
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </UserImg>
+                ) : (
+                  <UserImg>
+                    <img
+                      src="./img/admin.png"
+                      alt="base_image"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </UserImg>
+                )}
               </div>
-            </EditBoxForm>
+              <AddBox>
+                <EditInputBox>
+                  <AddInput
+                    {...register("name", { required: true })}
+                    type="text"
+                    id="add-profile-name"
+                    placeholder="이름"
+                  />
+                </EditInputBox>
+                <EditCheckBox>
+                  <H2>옵션 설정</H2>
+                  <CHeckBox>
+                    <ChildInput
+                      type="checkbox"
+                      id="child"
+                      {...register("child")}
+                    />
+                    <label htmlFor="child">&nbsp;어린이</label>
+                  </CHeckBox>
+                </EditCheckBox>
+              </AddBox>
+            </ModifyProfile>
+          </ProfileBox>
+          <div>
+            <SaveBnt>저장</SaveBnt>
+            <Bnt onClick={onClicked}>취소</Bnt>
+            <Bnt onClick={onDeleteClick}>프로필 삭제</Bnt>
+          </div>
+        </EditBoxForm>
       )}
     </Container>
   );

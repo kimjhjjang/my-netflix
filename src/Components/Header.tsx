@@ -3,9 +3,7 @@ import styled from "styled-components";
 import { motion, useAnimation, useViewportScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRecoilValue } from "recoil";
 import { authService } from "fbase";
-import { profileSelector } from "recoil/profiles";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -203,12 +201,13 @@ interface IForm {
   keyword: string;
 }
 
-interface ILogin {
+interface IProp {
   isLoggedIn: boolean;
+  isProfiles : any[];
 }
 
-function Header({ isLoggedIn }: ILogin) {
-  const profiles = useRecoilValue(profileSelector);
+function Header({ isLoggedIn , isProfiles }: IProp) {
+  //const profiles = useRecoilValue(profileSelector);
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useRouteMatch("/");
   const tvMatch = useRouteMatch("/tv");
@@ -315,6 +314,7 @@ function Header({ isLoggedIn }: ILogin) {
                   onHoverStart={toggleHoverMenu}
                   onHoverEnd={toggleHoverMenu}
                 >
+
                   <img
                     src="./img/admin.png"
                     alt="admin"
@@ -339,13 +339,21 @@ function Header({ isLoggedIn }: ILogin) {
                   >
                     <SubMenu>
                       
-                      {profiles.map((profile, i) => (
+                      {isProfiles.map((profile, i) => (
                         <User key={profile.createAt}>
+                          {profile.attachmentUrl !== "" ? 
+                          <img
+                          src={profile.attachmentUrl}
+                          style={{ width: "30px", height: "30px" }}
+                          alt={profile.name}
+                        />
+                          :
                           <img
                             src="./img/admin.png"
                             style={{ width: "30px", height: "30px" }}
                             alt={profile.name}
                           />
+                          }
                           <p>{profile.name}</p>
                         </User>
                       ))}
