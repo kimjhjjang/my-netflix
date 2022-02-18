@@ -216,7 +216,7 @@ function Main({isLoggedIn}:IProps) {
       </Section>
       <Section>
         <ImgBox>
-          <img src="./img/kids.png" alt="" />
+          <img src="https://firebasestorage.googleapis.com/v0/b/myflix-af163.appspot.com/o/img%2Fkids.png?alt=media&token=8c30014c-d540-4e50-aa85-aa8cce120090" alt="" />
         </ImgBox>
         <TextBox>
           <h2>어린이 전용 프로필을 만들어 보세요.</h2>
