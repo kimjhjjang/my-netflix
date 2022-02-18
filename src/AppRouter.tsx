@@ -24,7 +24,7 @@ function AppRouter({ isLoggedIn, currentUser, isProfiles, selectedProfile }: any
               <Search />
             </Route>
             <Route path="/browse">
-              <Browse currentUser={currentUser} isProfiles={isProfiles}/>
+              <Browse currentUser={currentUser} isProfiles={isProfiles} selectedProfile={selectedProfile}/>
             </Route>
             <Route path="/manageProfiles">
               <ManageProfiles currentUser={currentUser} isProfiles={isProfiles} selectedProfile={selectedProfile} />

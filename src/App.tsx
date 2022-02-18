@@ -10,6 +10,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isProfiles , setIsProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState([]);
+
   const getProfile = async () => {
     const dbProfile = await getDocs(collection(dbService, "profile"));
       dbProfile.forEach((doc) => {
@@ -51,10 +52,11 @@ function App() {
             const selectedProfilesArr = snapshot
                 .docs
                 .filter((doc) => doc.data().userId === authService.currentUser?.uid )
-                .map((doc) => ({
-                    id: doc.id,
-                    ...doc.data()
+                .map((document) => ({
+                    cid: document.id,
+                    ...document.data()
                 }));
+                console.log(selectedProfilesArr)
                   setSelectedProfile(selectedProfilesArr as any);
               });
         getSelectedProfile();

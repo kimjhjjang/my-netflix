@@ -161,7 +161,6 @@ function Signup({isLoggedIn}: IProps) {
         }
   };
 
-
   return (
     <Container>
       <Content>

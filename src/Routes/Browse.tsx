@@ -1,5 +1,5 @@
 import { dbService, storageService } from "fbase";
-import { addDoc, collection, doc, getDocs, updateDoc  } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc  } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
@@ -198,9 +198,10 @@ interface IUserProps {
 interface IProps {
   currentUser : any;
   isProfiles : any[];
+  selectedProfile : any[];
 }
 
-function Browse({ currentUser , isProfiles}: IProps) {
+function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
   const [attachment, setAttachment] = useState("");
   const [addProfile, setAddProfile] = useState(true);
   const { register, handleSubmit, setValue } = useForm<IUserProps>();
@@ -243,16 +244,11 @@ function Browse({ currentUser , isProfiles}: IProps) {
   };
 
   const onSelectProfile = async (profile:any) => {
-    const selectedProfile = await getDocs(collection(dbService, "selectedProfile"));
-    if(selectedProfile.docs.length === 0){
+    if(selectedProfile.length === 0){
       await addDoc(collection(dbService, "selectedProfile"), profile);
       history.push("/home");
     }else{
-      let selectedProfileDoc = "";
-      selectedProfile.forEach((doc) => {
-        selectedProfileDoc = doc.id;
-      });
-      const profileUpdateText = doc(dbService, "selectedProfile", selectedProfileDoc);
+      const profileUpdateText = doc(dbService, "selectedProfile", selectedProfile[0].cid);
       await updateDoc(profileUpdateText, profile);
       history.push("/home"); 
     }
