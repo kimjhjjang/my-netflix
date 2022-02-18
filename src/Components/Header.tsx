@@ -308,7 +308,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                 </Item>
               </Items>
             </Col>
-            <Col>{authService.currentUser?.email}님 반갑습니다.</Col>
+            
             <Col>
               <Search onSubmit={handleSubmit(onValid)}>
                 <motion.svg

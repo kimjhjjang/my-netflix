@@ -1,3 +1,4 @@
+import { authService } from "fbase";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -136,7 +137,11 @@ interface IEmail {
   email : string;
 };
 
-function Main() {
+interface IProps {
+  isLoggedIn : Boolean;
+}
+
+function Main({isLoggedIn}:IProps) {
     const {register, handleSubmit, formState:{errors}} = useForm<IEmail>();
     const history = useHistory();
     const onValid = ({email} : IEmail) => {
@@ -150,24 +155,29 @@ function Main() {
             영화와 시리즈를 <br /> 무제한으로.
           </h1>
           <p>해당 페이지는 React로 제작되었습니다.</p>
-          <p>넷플릭스 클론 사이트이며 이메일 주소를 입력하시면 접속하실 수 있습니다.</p>
-          <Form onSubmit={handleSubmit(onValid)}>
-                    <input
-                    {...register("email",{
-                        required : "이메일 주소를 입력해 주세요." ,
-                        pattern:{
-                            value:  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
-                            message: "이메일 형식이 맞지 않습니다."
-                        },
-                        minLength: {
-                            value : 5,
-                            message : "이메일 주소를 입력해 주세요."
-                        }
-                    }) } type="text" />
-                    <label>이메일 주소</label>
-                    <StartBtn>시작하기</StartBtn>
-                    <ErrorText>{errors?.email?.message}</ErrorText>
-                </Form>
+          <p>넷플릭스 클론 사이트이며 회원가입 및 로그인 후 접속하실 수 있습니다.</p>
+          {isLoggedIn ?
+            <p> <span style={{fontWeight:"600", color:"tomato"}}>{authService.currentUser?.email}</span> 님 반갑습니다.</p>
+          :
+            <Form onSubmit={handleSubmit(onValid)}>
+            <input
+            {...register("email",{
+                required : "이메일 주소를 입력해 주세요." ,
+                pattern:{
+                    value:  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
+                    message: "이메일 형식이 맞지 않습니다."
+                },
+                minLength: {
+                    value : 5,
+                    message : "이메일 주소를 입력해 주세요."
+                }
+            }) } type="text" />
+            <label>이메일 주소</label>
+            <StartBtn>시작하기</StartBtn>
+            <ErrorText>{errors?.email?.message}</ErrorText>
+        </Form>
+          }
+          
         </Showcase>
       </Content>
 
