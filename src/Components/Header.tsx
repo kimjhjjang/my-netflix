@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { motion, useAnimation, useViewportScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { authService } from "fbase";
+import { authService, dbService } from "fbase";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -98,7 +99,7 @@ const SubMenu = styled.div`
   position: absolute;
   background-color: black;
   top: 30px;
-  left: -50px;
+  right: -20px;
   padding: 20px;
   min-width: 180px;
 `;
@@ -149,6 +150,15 @@ const LogOut = styled.span`
   margin-top: 15px;
   border-radius: 5px;
   font-weight: 600;
+`;
+
+const SelectProfile = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0px 10px;
+  img {
+    margin-right: 10px;
+  }
 `;
 
 const adminVariants = {
@@ -203,11 +213,11 @@ interface IForm {
 
 interface IProp {
   isLoggedIn: boolean;
-  isProfiles : any[];
+  isProfiles: any[];
+  selectedProfile: any[];
 }
 
-function Header({ isLoggedIn , isProfiles }: IProp) {
-  //const profiles = useRecoilValue(profileSelector);
+function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useRouteMatch("/");
   const tvMatch = useRouteMatch("/tv");
@@ -250,6 +260,25 @@ function Header({ isLoggedIn , isProfiles }: IProp) {
     toggleHover(false);
   };
 
+  const onSelectProfile = async (profile: any) => {
+    if (selectedProfile.length === 0) {
+      await addDoc(collection(dbService, "selectedProfile"), profile);
+      history.push("/home");
+    } else {
+      let selectedProfileDoc = "";
+      selectedProfile.forEach((doc) => {
+        selectedProfileDoc = doc.id;
+      });
+      const profileUpdateText = doc(
+        dbService,
+        "selectedProfile",
+        selectedProfileDoc
+      );
+      await updateDoc(profileUpdateText, profile);
+      history.push("/home");
+    }
+  };
+
   return (
     <>
       <Nav variants={navVariants} animate={navAnimation} initial={"top"}>
@@ -282,11 +311,7 @@ function Header({ isLoggedIn , isProfiles }: IProp) {
                 </Item>
               </Items>
             </Col>
-            <Col><p>{authService.currentUser?.email} 님 반갑습니다.</p>
-            <p>{
-            
-            }</p>
-            </Col>
+            <Col>{authService.currentUser?.email}님 반갑습니다.</Col>
             <Col>
               <Search onSubmit={handleSubmit(onValid)}>
                 <motion.svg
@@ -314,17 +339,28 @@ function Header({ isLoggedIn , isProfiles }: IProp) {
                   onHoverStart={toggleHoverMenu}
                   onHoverEnd={toggleHoverMenu}
                 >
-
-                  <img
-                    src="./img/admin.png"
-                    alt="admin"
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      margin: "0px 15px",
-                    }}
-                  />
-                  
+                  {selectedProfile.length !== 0 ? (
+                    selectedProfile.map((profile) => (
+                      <SelectProfile key={profile.createAt}>
+                        <>
+                          <img
+                            src={
+                              profile.attachmentUrl !== ""
+                                ? profile.attachmentUrl
+                                : "https://firebasestorage.googleapis.com/v0/b/myflix-af163.appspot.com/o/img%2Fadmin.png?alt=media&token=86abaefd-d6df-485a-a821-504bc6f522fb"
+                            }
+                            style={{ width: "30px", height: "30px" }}
+                            alt={profile.name}
+                          />
+                          <p>{profile.name}</p>
+                        </>
+                      </SelectProfile>
+                    ))
+                  ) : (
+                    <span style={{ margin: "0px 10px" }}>
+                      사용자를 설정하세요.
+                    </span>
+                  )}
 
                   <Arrow
                     variants={arrowAnimate}
@@ -338,22 +374,25 @@ function Header({ isLoggedIn , isProfiles }: IProp) {
                     variants={subMenuAnimate}
                   >
                     <SubMenu>
-                      
-                      {isProfiles.map((profile, i) => (
-                        <User key={profile.createAt}>
-                          {profile.attachmentUrl !== "" ? 
-                          <img
-                          src={profile.attachmentUrl}
-                          style={{ width: "30px", height: "30px" }}
-                          alt={profile.name}
-                        />
-                          :
-                          <img
-                            src="./img/admin.png"
-                            style={{ width: "30px", height: "30px" }}
-                            alt={profile.name}
-                          />
-                          }
+                      {isProfiles.map((profile) => (
+                        <User
+                          key={profile.createAt}
+                          onClick={() => onSelectProfile(profile)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {profile.attachmentUrl !== "" ? (
+                            <img
+                              src={profile.attachmentUrl}
+                              style={{ width: "30px", height: "30px" }}
+                              alt={profile.name}
+                            />
+                          ) : (
+                            <img
+                              src="https://firebasestorage.googleapis.com/v0/b/myflix-af163.appspot.com/o/img%2Fadmin.png?alt=media&token=86abaefd-d6df-485a-a821-504bc6f522fb"
+                              style={{ width: "30px", height: "30px" }}
+                              alt={profile.name}
+                            />
+                          )}
                           <p>{profile.name}</p>
                         </User>
                       ))}

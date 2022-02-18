@@ -1,5 +1,3 @@
-import { dbService } from "fbase";
-import { collection, getDocs } from "firebase/firestore";
 import { IAdminState } from "recoil/admin";
 
 export function makeImagePath(id: string, format?: string) {
@@ -22,19 +20,6 @@ export const loadUsers = () => {
 
 export const saveUsers = (users: IAdminState) => {
   localStorage.setItem(LOCALSTORAGE, JSON.stringify(users));
-};
-
-// reset profile
-export const resetProfile = async () => {
-  let profileData: any[] = [];
-  const dbProfile = await getDocs(collection(dbService, "profile"));
-  dbProfile.forEach((doc) => {
-    profileData.push({
-      profileId: doc.id,
-      ...doc.data(),
-    });
-  });
-  return (profileData);
 };
 
 

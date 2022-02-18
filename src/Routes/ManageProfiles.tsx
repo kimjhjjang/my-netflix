@@ -224,9 +224,11 @@ interface IUserProps {
 interface IProps {
   currentUser: any;
   isProfiles: any[];
+  selectedProfile : any[];
 }
 
-function ManageProfiles({ currentUser, isProfiles }: IProps) {
+function ManageProfiles({ currentUser, isProfiles, selectedProfile }: IProps) {
+  
   // Profile data
   const [profileId, setProfileId] = useState("");
   const [attachment, setAttachment] = useState("");
@@ -260,7 +262,7 @@ function ManageProfiles({ currentUser, isProfiles }: IProps) {
 
   const { register, handleSubmit, setValue } = useForm<IUserProps>();
   //  프로필 수정하기
-  const onValids = async ({ name, child }: IUserProps) => {
+  const onValids = async ({ name }: IUserProps) => {
     let attachmentUrl = "";
     if (attachment !== "") {
       try {
@@ -285,6 +287,9 @@ function ManageProfiles({ currentUser, isProfiles }: IProps) {
         console.log(error);
       }
     }
+    const profileUpdateText = doc(dbService, "profile", profileId);
+    await updateDoc(profileUpdateText, { name, attachmentUrl });
+    setProfileId("");
   };
 
   const onClicked = () => {
@@ -348,7 +353,7 @@ function ManageProfiles({ currentUser, isProfiles }: IProps) {
                       />
                     ) : (
                       <img
-                        src="./img/admin.png"
+                        src="https://firebasestorage.googleapis.com/v0/b/myflix-af163.appspot.com/o/img%2Fadmin.png?alt=media&token=86abaefd-d6df-485a-a821-504bc6f522fb"
                         alt="base_image"
                         style={{ width: "100%", height: "100%" }}
                       />
@@ -391,9 +396,11 @@ function ManageProfiles({ currentUser, isProfiles }: IProps) {
                     />
                   </UserImg>
                 ) : (
+                  
                   <UserImg>
                     <img
-                      src="./img/admin.png"
+                      src=
+                      { attachUrl !== "" ? attachUrl : "https://firebasestorage.googleapis.com/v0/b/myflix-af163.appspot.com/o/img%2Fadmin.png?alt=media&token=86abaefd-d6df-485a-a821-504bc6f522fb"}
                       alt="base_image"
                       style={{ width: "100%", height: "100%" }}
                     />
@@ -426,7 +433,7 @@ function ManageProfiles({ currentUser, isProfiles }: IProps) {
           <div>
             <SaveBnt>저장</SaveBnt>
             <Bnt onClick={onClicked}>취소</Bnt>
-            <Bnt onClick={onDeleteClick}>프로필 삭제</Bnt>
+            {selectedProfile[0].id !== profileId && <Bnt onClick={onDeleteClick}>프로필 삭제</Bnt>}
           </div>
         </EditBoxForm>
       )}

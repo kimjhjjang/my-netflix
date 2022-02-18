@@ -1,10 +1,10 @@
 import { dbService, storageService } from "fbase";
-import { addDoc, collection  } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, updateDoc  } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 
@@ -202,12 +202,9 @@ interface IProps {
 
 function Browse({ currentUser , isProfiles}: IProps) {
   const [attachment, setAttachment] = useState("");
-  //const setProfiles = useSetRecoilState(profileState);
-  //const profiles = useRecoilValue(profileSelector);
-
   const [addProfile, setAddProfile] = useState(true);
   const { register, handleSubmit, setValue } = useForm<IUserProps>();
-
+  const history = useHistory();
   // 프로필 추가
   const onValid = async ({ name, child }: IUserProps) => {
     const currentUserId = currentUser.uid;
@@ -245,6 +242,22 @@ function Browse({ currentUser , isProfiles}: IProps) {
     setValue("name", "");
   };
 
+  const onSelectProfile = async (profile:any) => {
+    const selectedProfile = await getDocs(collection(dbService, "selectedProfile"));
+    if(selectedProfile.docs.length === 0){
+      await addDoc(collection(dbService, "selectedProfile"), profile);
+      history.push("/home");
+    }else{
+      let selectedProfileDoc = "";
+      selectedProfile.forEach((doc) => {
+        selectedProfileDoc = doc.id;
+      });
+      const profileUpdateText = doc(dbService, "selectedProfile", selectedProfileDoc);
+      await updateDoc(profileUpdateText, profile);
+      history.push("/home"); 
+    }
+  }
+
   const onClicked = () => {
     setAddProfile((props) => !props);
   };
@@ -279,7 +292,7 @@ function Browse({ currentUser , isProfiles}: IProps) {
             ) : null}
             <Users>
               {isProfiles.map((profile, i) => (
-                <User key={i}>
+                <User key={i} onClick={() => onSelectProfile(profile)}>
                   {profile.attachmentUrl !== "" ? (
                     <UserImg>
                       <img
@@ -291,7 +304,7 @@ function Browse({ currentUser , isProfiles}: IProps) {
                   ) : (
                     <UserImg>
                       <img
-                        src="./img/admin.png"
+                        src="https://firebasestorage.googleapis.com/v0/b/myflix-af163.appspot.com/o/img%2Fadmin.png?alt=media&token=86abaefd-d6df-485a-a821-504bc6f522fb"
                         alt="base_image"
                         style={{ width: "100%", height: "100%" }}
                       />
