@@ -4,7 +4,7 @@ import { motion, useAnimation, useViewportScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { authService, dbService } from "fbase";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, updateDoc } from "firebase/firestore";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -261,21 +261,18 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   };
 
   const onSelectProfile = async (profile: any) => {
-    if (selectedProfile.length === 0) {
+    const selectedProfile = await getDocs(collection(dbService, "selectedProfile"));
+    if(selectedProfile.docs.length === 0){
       await addDoc(collection(dbService, "selectedProfile"), profile);
       history.push("/home");
-    } else {
+    }else{
       let selectedProfileDoc = "";
       selectedProfile.forEach((doc) => {
         selectedProfileDoc = doc.id;
       });
-      const profileUpdateText = doc(
-        dbService,
-        "selectedProfile",
-        selectedProfileDoc
-      );
+      const profileUpdateText = doc(dbService, "selectedProfile", selectedProfileDoc);
       await updateDoc(profileUpdateText, profile);
-      history.push("/home");
+      history.push("/home"); 
     }
   };
 
