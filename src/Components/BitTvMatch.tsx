@@ -102,7 +102,6 @@ function BigTvMatch({bigTvMatch} : any) {
     ["getTv", bigTvMatch?.params.tvId],
     () => getContentDetails(bigTvMatch?.params.tvId + "", "tv") 
   );
-    console.log(data);
     // similar content 가져오기
     const { data: similarData, isLoading:similarLoading } = useQuery<IGetMoviesResult>(
         ["getContentSimilars", bigTvMatch?.params.tvId],
