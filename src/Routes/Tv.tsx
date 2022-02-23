@@ -1,7 +1,10 @@
-import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
+import BigTvMatch from "Components/BitTvMatch";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { TailSpin } from "react-loader-spinner";
 import { useQuery } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import StarRatings from "react-star-ratings";
 import styled from "styled-components";
 import {
   getAiringTv,
@@ -23,7 +26,7 @@ const TvList = styled.div`
 
 const StyleBox = styled.div`
   position: relative;
-  height: 300px;
+  height: 400px;
   margin-bottom: 30px;
 `;
 
@@ -33,7 +36,7 @@ const Row = styled(motion.div)`
   grid-template-rows: auto;
   grid-gap: 5px;
   margin-bottom: 30px;
-  min-height: 300px;
+  min-height: 400px;
   position: absolute;
   width: 100%;
 `;
@@ -84,7 +87,7 @@ const infoVariants = {
 };
 
 const Item = styled.div<{ bgphoto: string }>`
-  padding-bottom: 60%;
+  padding-bottom: 100%;
   background-size: cover;
   background-position: center center;
   background-image: url(${(props) => props.bgphoto});
@@ -96,18 +99,18 @@ const H1 = styled.h1`
 `;
 
 const Loader = styled.div`
-  height: 20vh;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
 const Banner = styled.div<{ bgphoto: string }>`
-  height: 80vh;
+  height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-end;
   padding: 60px;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgphoto});
@@ -130,7 +133,7 @@ const TvTitle = styled.h2`
   margin-bottom: 10px;
 `;
 
-const TvContent = styled.p`
+const TvContent = styled.div`
   font-weight: 400;
   color: grey;
 `;
@@ -183,7 +186,7 @@ const MoveBox = styled.div`
   justify-content: space-between;
 `;
 const MoveButton = styled.button`
-  height: 300px;
+  height: 400px;
   z-index: 2;
   opacity: 0.2;
   &:hover {
@@ -313,25 +316,6 @@ function Tv() {
     history.push(`/tv/${tvId}`);
   };
   const bigTvMatch = useRouteMatch<{ tvId: string }>("/tv/:tvId");
-
-  const toprate_tv = toprate?.results && toprate?.results;
-  const latest_tv = latest?.results && latest?.results;
-  const popular_tv = popular?.results && popular?.results;
-  const airing_tv = airing?.results && airing?.results;
-
-  const totalMovie = toprate_tv?.concat(
-    popular_tv as any,
-    airing_tv as any,
-    latest_tv as any
-  );
-
-  const clickedTv =
-    bigTvMatch?.params.tvId &&
-    totalMovie!.find((tv) => tv.id === +bigTvMatch.params.tvId);
-
-  const onOverlayClick = () => history.push("/tv");
-  const { scrollY } = useViewportScroll();
-
   const rowVariants = {
     hidden: (isBack: boolean) => ({
       x: isBack ? -window.outerWidth - 5 : window.outerWidth + 5,
@@ -347,7 +331,9 @@ function Tv() {
   return (
     <>
       {loading ? (
-        <Loader>Loading...</Loader>
+        <Loader>
+          <TailSpin color="#00BFFF" height={80} width={80} />
+        </Loader>
       ) : (
         <Container>
           <Banner
@@ -363,6 +349,7 @@ function Tv() {
                 padding: "10px",
                 fontSize: "15px",
                 fontWeight: 600,
+                marginTop:"20px"
               }}
             >
               상세 정보
@@ -403,12 +390,18 @@ function Tv() {
                       >
                         <Item
                           className="thumb"
-                          bgphoto={makeImagePath(tv.backdrop_path, "w500")}
+                          bgphoto={makeImagePath(tv.poster_path, "w500")}
                         ></Item>
                         <Info variants={infoVariants}>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
-                            {tv.overview.substring(0, 60) + "..."}
+                          <StarRatings
+                            rating={tv.vote_average / 2}
+                            starDimension="20px"
+                            starSpacing="1px"
+                            starRatedColor="tomato"
+                            numberOfStars={5}
+                          /> ({tv.vote_average} / 10)
                           </TvContent>
                         </Info>
                       </Box>
@@ -417,14 +410,17 @@ function Tv() {
               </AnimatePresence>
             </StyleBox>
 
-            <H1>TV TOP-RATE</H1>
+            <H1>TV 평점 높은 프로그램</H1>
             <StyleBox>
-            <MoveBox>
+              <MoveBox>
                 <MoveButton onClick={() => prevIndex(1)}>&larr;</MoveButton>
                 <MoveButton onClick={() => nextIndex(1)}>&rarr;</MoveButton>
               </MoveBox>
-              <AnimatePresence initial={false} onExitComplete={toggleLeaving}
-                custom={isBack}>
+              <AnimatePresence
+                initial={false}
+                onExitComplete={toggleLeaving}
+                custom={isBack}
+              >
                 <Row
                   variants={rowVariants}
                   initial="hidden"
@@ -447,12 +443,18 @@ function Tv() {
                       >
                         <Item
                           className="thumb"
-                          bgphoto={makeImagePath(tv.backdrop_path, "w500")}
-                        ></Item>
+                          bgphoto={makeImagePath(tv.poster_path, "w500")}
+                        >{makeImagePath(tv.backdrop_path, "w500")}</Item>
                         <Info variants={infoVariants}>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
-                            {tv.overview.substring(0, 60) + "..."}
+                          <StarRatings
+                            rating={tv.vote_average / 2}
+                            starDimension="20px"
+                            starSpacing="1px"
+                            starRatedColor="tomato"
+                            numberOfStars={5}
+                          /> ({tv.vote_average} / 10)
                           </TvContent>
                         </Info>
                       </Box>
@@ -463,12 +465,15 @@ function Tv() {
 
             <H1>TV AIRING</H1>
             <StyleBox>
-            <MoveBox>
+              <MoveBox>
                 <MoveButton onClick={() => prevIndex(2)}>&larr;</MoveButton>
                 <MoveButton onClick={() => nextIndex(2)}>&rarr;</MoveButton>
               </MoveBox>
-              <AnimatePresence initial={false} onExitComplete={toggleLeaving}
-                custom={isBack}>
+              <AnimatePresence
+                initial={false}
+                onExitComplete={toggleLeaving}
+                custom={isBack}
+              >
                 <Row
                   variants={rowVariants}
                   initial="hidden"
@@ -491,12 +496,18 @@ function Tv() {
                       >
                         <Item
                           className="thumb"
-                          bgphoto={makeImagePath(tv.backdrop_path, "w500")}
+                          bgphoto={makeImagePath(tv.poster_path, "w500")}
                         ></Item>
                         <Info variants={infoVariants}>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
-                            {tv.overview.substring(0, 60) + "..."}
+                          <StarRatings
+                            rating={tv.vote_average / 2}
+                            starDimension="20px"
+                            starSpacing="1px"
+                            starRatedColor="tomato"
+                            numberOfStars={5}
+                          /> ({tv.vote_average} / 10)
                           </TvContent>
                         </Info>
                       </Box>
@@ -507,14 +518,17 @@ function Tv() {
 
             <H1>TV LATEST</H1>
             <StyleBox>
-            {latest?.results ? 
-              <MoveBox>
-                <MoveButton onClick={() => prevIndex(3)}>&larr;</MoveButton>
-                <MoveButton onClick={() => nextIndex(3)}>&rarr;</MoveButton>
-              </MoveBox>
-              : null }
-              <AnimatePresence initial={false} onExitComplete={toggleLeaving}
-                custom={isBack}>
+              {latest?.results ? (
+                <MoveBox>
+                  <MoveButton onClick={() => prevIndex(3)}>&larr;</MoveButton>
+                  <MoveButton onClick={() => nextIndex(3)}>&rarr;</MoveButton>
+                </MoveBox>
+              ) : null}
+              <AnimatePresence
+                initial={false}
+                onExitComplete={toggleLeaving}
+                custom={isBack}
+              >
                 <Row
                   variants={rowVariants}
                   initial="hidden"
@@ -538,12 +552,18 @@ function Tv() {
                         >
                           <Item
                             className="thumb"
-                            bgphoto={makeImagePath(tv.backdrop_path, "w500")}
+                            bgphoto={makeImagePath(tv.poster_path, "w500")}
                           ></Item>
                           <Info variants={infoVariants}>
                             <TvTitle>{tv.name}</TvTitle>
                             <TvContent>
-                              {tv.overview.substring(0, 60) + "..."}
+                            <StarRatings
+                            rating={tv.vote_average / 2}
+                            starDimension="20px"
+                            starSpacing="1px"
+                            starRatedColor="tomato"
+                            numberOfStars={5}
+                          /> ({tv.vote_average} / 10)
                             </TvContent>
                           </Info>
                         </Box>
@@ -558,7 +578,9 @@ function Tv() {
             </StyleBox>
           </TvList>
 
-          <AnimatePresence>
+          {bigTvMatch?.isExact === true ? <BigTvMatch bigTvMatch={bigTvMatch}/>: null}
+
+          {/* <AnimatePresence>
             {bigTvMatch ? (
               <>
                 <Overlay
@@ -605,7 +627,7 @@ function Tv() {
                 </BigMovie>
               </>
             ) : null}
-          </AnimatePresence>
+          </AnimatePresence> */}
         </Container>
       )}
     </>

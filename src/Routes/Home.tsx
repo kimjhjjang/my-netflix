@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { motion, AnimatePresence, useViewportScroll } from "framer-motion";
+import { motion, AnimatePresence, } from "framer-motion";
 import {
   getMovies,
   getPopularMovies,
@@ -14,22 +14,33 @@ import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Top10 from "../Components/Top10";
 import "../Common/main.css";
+import StarRatings from "react-star-ratings";
+import { TailSpin } from "react-loader-spinner";
+import BigMovieMatch from "Components/BigMovieMatch";
 
 const Wrapper = styled.div`
   background: black;
   padding-bottom: 200px;
-  overflow: hidden;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #4d4d4d;
+  }
 `;
 
 const Loader = styled.div`
-  height: 20vh;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
 const Banner = styled.div<{ bgphoto: string }>`
-  height: 100vh;
+  height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -40,7 +51,7 @@ const Banner = styled.div<{ bgphoto: string }>`
 `;
 
 const Title = styled.h2`
-  font-family: 'Black Han Sans', sans-serif !important;
+  font-weight: bold;
   font-size: 72px;
   margin-bottom: 20px;
 `;
@@ -53,7 +64,7 @@ const Overview = styled.p`
 
 const Slider = styled.div`
   position: relative;
-  height: 200px;
+  height: 300px;
   margin-bottom: 30px;
 `;
 
@@ -65,16 +76,9 @@ const Row = styled(motion.div)`
   position: absolute;
 `;
 
-const Box = styled(motion.div)<{ bgphoto: string }>`
-  background-color: white;
-  background-image: url(${(props) => props.bgphoto});
-  background-size: cover;
-  background-position: center center;
-  height: 200px;
-  font-size: 66px;
-  cursor: pointer;
+const Box = styled(motion.div)<{ bgphoto?: string }>`
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
   &:first-child {
     transform-origin: center left;
   }
@@ -84,23 +88,41 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
 `;
 
 const Info = styled(motion.div)`
+  display: none;
+  flex-direction: column;
+  flex-grow: 1;
   padding: 10px;
   background-color: ${(props) => props.theme.black.lighter};
-  opacity: 0;
-  flex-grow: 1;
-  h4 {
-    text-align: center;
-    font-size: 18px;
+  opacity: 1;
+`;
+
+const InfoTitle = styled.div`
+margin-bottom: 20px;
+  h4{
+    font-size: 20px;
+    font-weight: 600;
   }
 `;
 
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
+const InfoBox = styled.div`
+  display: flex;
+  justify-content: space-around;
+`;
+
+const InfoDetailBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const INfoMainTitle = styled.span`
+font-size: 20px;
+  font-weight: 600;
+`
+
+const InfoSubTitle = styled.span`
+    font-size: 12px;
+    margin-top: 10px;
 `;
 
 const H1 = styled.h1`
@@ -108,39 +130,6 @@ const H1 = styled.h1`
   font-size: 36px;
 `;
 
-const BigMovie = styled(motion.div)`
-  position: absolute;
-  width: 40vw;
-  height: 80vh;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  border-radius: 15px;
-  overflow: hidden;
-  background-color: ${(props) => props.theme.black.lighter};
-`;
-
-const BigCover = styled(motion.div)`
-  width: 100%;
-  background-size: cover;
-  background-position: center center;
-  height: 400px;
-`;
-
-const BigTitle = styled(motion.h3)`
-  color: ${(props) => props.theme.white.lighter};
-  padding: 20px;
-  font-size: 46px;
-  position: relative;
-  top: -80px;
-`;
-
-const BigOverview = styled(motion.p)`
-  padding: 20px;
-  position: relative;
-  top: -80px;
-  color: ${(props) => props.theme.white.lighter};
-`;
 
 const rowVariants = {
   hidden: (isBack: boolean) => ({
@@ -171,7 +160,8 @@ const boxVariants = {
 
 const infoVariants = {
   hover: {
-    opacity: 1,
+    display:"flex",
+    opacity:1,
     transition: {
       delay: 0.5,
       duaration: 0.1,
@@ -188,7 +178,7 @@ const MoveBox = styled.div`
 `;
 
 const MoveButton = styled.button`
-  height: 200px;
+  height: 180px;
   z-index: 2;
   opacity: 0.2;
   &:hover {
@@ -201,7 +191,6 @@ const offset: number = 6;
 function Home() {
   const history = useHistory();
   const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
-  const { scrollY } = useViewportScroll();
   // 오늘 TOP 10
   const { data: popMovies, isLoading: popLoading } =
     useQuery<IPopularMoviesResult>(
@@ -231,8 +220,6 @@ function Home() {
   const [index, setIndex] = useState(0); //상영중
   const [topIndex, setTopIndex] = useState(0); // 인기 콘텐츠
   const [comingIndex, setComingIndex] = useState(0); // 개봉예정
-
-
 
   const nextIndex = (type: number) => {
     switch (type) {
@@ -308,27 +295,13 @@ function Home() {
     history.push(`/movies/${movieId}`);
   };
 
-  const nowplaying_movie = data?.results;
-  const pop_movie = popMovies?.results;
-  const top_movie = topMovies?.results;
-  const coming_movie = comingMovies?.results;
-
-  const totalMovie = nowplaying_movie?.concat(
-    pop_movie as any,
-    top_movie as any,
-    coming_movie as any
-  );
-
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    totalMovie!.find((movie) => movie.id === +bigMovieMatch.params.movieId);
-
-  const onOverlayClick = () => history.push("/home");
 
   return (
     <Wrapper>
       {isLoading ? (
-        <Loader>Loading...</Loader>
+        <Loader>
+          <TailSpin color="#00BFFF" height={80} width={80} />
+        </Loader>
       ) : (
         <>
           <Banner bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}>
@@ -342,7 +315,7 @@ function Home() {
                 padding: "10px",
                 fontSize: "15px",
                 fontWeight: 600,
-                marginTop : "20px",
+                marginTop: "20px",
               }}
             >
               상세 정보
@@ -356,11 +329,15 @@ function Home() {
           />
           <H1>상영중인 콘텐츠</H1>
           <Slider>
-          <MoveBox>
-                <MoveButton onClick={() => prevIndex(0)}>&larr;</MoveButton>
-                <MoveButton onClick={() => nextIndex(0)}>&rarr;</MoveButton>
-              </MoveBox>
-            <AnimatePresence initial={false} onExitComplete={toggleLeaving} custom={isBack}>
+            <MoveBox>
+              <MoveButton onClick={() => prevIndex(0)}>&larr;</MoveButton>
+              <MoveButton onClick={() => nextIndex(0)}>&rarr;</MoveButton>
+            </MoveBox>
+            <AnimatePresence
+              initial={false}
+              onExitComplete={toggleLeaving}
+              custom={isBack}
+            >
               <Row
                 variants={rowVariants}
                 initial="hidden"
@@ -380,12 +357,39 @@ function Home() {
                       variants={boxVariants}
                       whileHover="hover"
                       initial="normal"
-                      onClick={() => onBoxClicked(movie.id, "now")}
                       transition={{ type: "tween" }}
-                      bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                      onClick={() => onBoxClicked(movie.id, "now")}
                     >
+                      <img
+                        src={makeImagePath(movie.backdrop_path, "w300")}
+                        alt={movie.title}
+                      />
+
                       <Info variants={infoVariants}>
-                        <h4>{movie.title}</h4>
+                        <InfoTitle>
+                          <h4>{movie.title}</h4>
+                          <h5>{movie.original_title}</h5>
+                        </InfoTitle>
+                        <InfoBox>
+                          <InfoDetailBox>
+                            <INfoMainTitle>{movie.vote_count}</INfoMainTitle>
+                            <InfoSubTitle>좋아요 수</InfoSubTitle>
+                          </InfoDetailBox>
+                          <InfoDetailBox>
+                            <StarRatings
+                            rating={movie.vote_average / 2}
+                            starDimension="20px"
+                            starSpacing="1px"
+                            starRatedColor="tomato"
+                            numberOfStars={5}
+                          />
+                            <InfoSubTitle>({movie.vote_average})</InfoSubTitle>
+                          </InfoDetailBox>
+                          <InfoDetailBox>
+                            <INfoMainTitle>{movie.release_date.substring(0, 4)}년</INfoMainTitle>
+                            <InfoSubTitle>{movie.release_date.substring(5, 7)}월 {movie.release_date.substring(8, 10)}일</InfoSubTitle>
+                          </InfoDetailBox>
+                        </InfoBox>
                       </Info>
                     </Box>
                   ))}
@@ -393,13 +397,17 @@ function Home() {
             </AnimatePresence>
           </Slider>
 
-          <H1>인기 콘텐츠</H1>
+           <H1>인기 콘텐츠</H1>
           <Slider>
-          <MoveBox>
-                <MoveButton onClick={() => prevIndex(1)}>&larr;</MoveButton>
-                <MoveButton onClick={() => nextIndex(1)}>&rarr;</MoveButton>
-              </MoveBox>
-            <AnimatePresence initial={false} onExitComplete={toggleLeaving} custom={isBack}>
+            <MoveBox>
+              <MoveButton onClick={() => prevIndex(1)}>&larr;</MoveButton>
+              <MoveButton onClick={() => nextIndex(1)}>&rarr;</MoveButton>
+            </MoveBox>
+            <AnimatePresence
+              initial={false}
+              onExitComplete={toggleLeaving}
+              custom={isBack}
+            >
               <Row
                 variants={rowVariants}
                 initial="hidden"
@@ -410,7 +418,6 @@ function Home() {
                 custom={isBack}
               >
                 {topMovies?.results
-                  .slice(1)
                   .slice(offset * topIndex, offset * topIndex + offset)
                   .map((movie) => (
                     <Box
@@ -423,8 +430,35 @@ function Home() {
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
+                      <img
+                        src={makeImagePath(movie.backdrop_path, "w300")}
+                        alt={movie.title}
+                      />
                       <Info variants={infoVariants}>
-                        <h4>{movie.title}</h4>
+                        <InfoTitle>
+                          <h4>{movie.title}</h4>
+                          <h5>{movie.original_title}</h5>
+                        </InfoTitle>
+                        <InfoBox>
+                          <InfoDetailBox>
+                            <INfoMainTitle>{movie.vote_count}</INfoMainTitle>
+                            <InfoSubTitle>좋아요 수</InfoSubTitle>
+                          </InfoDetailBox>
+                          <InfoDetailBox>
+                            <StarRatings
+                            rating={movie.vote_average / 2}
+                            starDimension="20px"
+                            starSpacing="1px"
+                            starRatedColor="tomato"
+                            numberOfStars={5}
+                          />
+                            <InfoSubTitle>({movie.vote_average})</InfoSubTitle>
+                          </InfoDetailBox>
+                          <InfoDetailBox>
+                            <INfoMainTitle>{movie.release_date.substring(0, 4)}년</INfoMainTitle>
+                            <InfoSubTitle>{movie.release_date.substring(5, 7)}월 {movie.release_date.substring(8, 10)}일</InfoSubTitle>
+                          </InfoDetailBox>
+                        </InfoBox>
                       </Info>
                     </Box>
                   ))}
@@ -432,13 +466,17 @@ function Home() {
             </AnimatePresence>
           </Slider>
 
-          <H1>개봉 예정 콘텐츠</H1>
+         <H1>개봉 예정 콘텐츠</H1>
           <Slider>
-          <MoveBox>
-                <MoveButton onClick={() => prevIndex(2)}>&larr;</MoveButton>
-                <MoveButton onClick={() => nextIndex(2)}>&rarr;</MoveButton>
-              </MoveBox>
-            <AnimatePresence initial={false} onExitComplete={toggleLeaving} custom={isBack}>
+            <MoveBox>
+              <MoveButton onClick={() => prevIndex(2)}>&larr;</MoveButton>
+              <MoveButton onClick={() => nextIndex(2)}>&rarr;</MoveButton>
+            </MoveBox>
+            <AnimatePresence
+              initial={false}
+              onExitComplete={toggleLeaving}
+              custom={isBack}
+            >
               <Row
                 variants={rowVariants}
                 initial="hidden"
@@ -462,62 +500,43 @@ function Home() {
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
+                      <img
+                        src={makeImagePath(movie.backdrop_path, "w300")}
+                        alt={movie.title}
+                      />
                       <Info variants={infoVariants}>
-                        <h4>{movie.title}</h4>
+                        <InfoTitle>
+                          <h4>{movie.title}</h4>
+                          <h5>{movie.original_title}</h5>
+                        </InfoTitle>
+                        <InfoBox>
+                          <InfoDetailBox>
+                            <INfoMainTitle>{movie.vote_count}</INfoMainTitle>
+                            <InfoSubTitle>좋아요 수</InfoSubTitle>
+                          </InfoDetailBox>
+                          <InfoDetailBox>
+                            <StarRatings
+                            rating={movie.vote_average / 2}
+                            starDimension="20px"
+                            starSpacing="1px"
+                            starRatedColor="tomato"
+                            numberOfStars={5}
+                          />
+                            <InfoSubTitle>({movie.vote_average})</InfoSubTitle>
+                          </InfoDetailBox>
+                          <InfoDetailBox>
+                            <INfoMainTitle>{movie.release_date.substring(0, 4)}년</INfoMainTitle>
+                            <InfoSubTitle>{movie.release_date.substring(5, 7)}월 {movie.release_date.substring(8, 10)}일</InfoSubTitle>
+                          </InfoDetailBox>
+                        </InfoBox>
                       </Info>
                     </Box>
                   ))}
               </Row>
             </AnimatePresence>
           </Slider>
-          <AnimatePresence>
-            {bigMovieMatch ? (
-              <>
-                <Overlay
-                  onClick={onOverlayClick}
-                  exit={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                />
-                <BigMovie
-                  initial={{ opacity: 0.6 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  style={{ top: scrollY.get() + 100 }}
-                  layoutId={bigMovieMatch.params.movieId}
-                >
-                  {clickedMovie && (
-                    <>
-                      <BigCover
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        style={{
-                          backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                            clickedMovie.backdrop_path,
-                            "w500"
-                          )})`,
-                        }}
-                      />
-                      <BigTitle
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        {clickedMovie.title}
-                      </BigTitle>
-                      <BigOverview
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        {clickedMovie.overview}
-                      </BigOverview>
-                    </>
-                  )}
-                </BigMovie>
-              </>
-            ) : null}
-          </AnimatePresence>
+          {bigMovieMatch?.isExact === true ? <BigMovieMatch bigMovieMatch={bigMovieMatch}/>: null}
+          
         </>
       )}
     </Wrapper>

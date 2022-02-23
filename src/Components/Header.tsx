@@ -293,17 +293,17 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
               <Items>
                 <Item>
                   <Link to="/home">
-                    Home {homeMatch && <Circle layoutId="circle" />}
+                    영화 {homeMatch && <Circle layoutId="circle" />}
                   </Link>
                 </Item>
                 <Item>
                   <Link to="/tv">
-                    Tv Shows {tvMatch && <Circle layoutId="circle" />}
+                    티비 {tvMatch && <Circle layoutId="circle" />}
                   </Link>
                 </Item>
               </Items>
             </Col>
-            
+            <Col>{authService.currentUser?.email}님 반갑습니다.</Col>
             <Col>
               <Search onSubmit={handleSubmit(onValid)}>
                 <motion.svg

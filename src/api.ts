@@ -7,6 +7,11 @@ interface IMovie {
     poster_path : string;
     title : string;
     overview : string;
+    original_title: string;
+    popularity:number;
+    release_date: string;
+    vote_average: number;
+    vote_count: number;
 }
 
 export interface IGetMoviesResult {
@@ -112,7 +117,7 @@ export function getTopRateTv(){
   return fetch(`${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
 }
 export function getLatestTv(){
-  return fetch(`${BASE_PATH}/tv/latest?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
+  return fetch(`${BASE_PATH}/tv/on_the_air?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
 }
 export function getPopularTv(){
   return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR`).then((response) => response.json());
@@ -122,8 +127,56 @@ export function getAiringTv(){
 }
 
 
-//Airing Today
-// https://api.themoviedb.org/3/tv/airing_today?api_key=cecb32ef334e1e99acad636e9c0aea98&language=ko-kr
+// get Details https://api.themoviedb.org/3/movie/476669?api_key=cecb32ef334e1e99acad636e9c0aea98&language=ko-kr
+interface Moviekeyword{
+  name : string
+}
 
-// tv 프로그램 검색했을때
-//https://api.themoviedb.org/3/search/tv?api_key=cecb32ef334e1e99acad636e9c0aea98&language=ko-kr&page=1&query=<keyword>&include_adult=false
+interface MovieProduction{
+  id: number;
+  logo_path: string;
+  name: string;
+}
+
+export interface IGetDetails {
+  adult : boolean;
+  backdrop_path : string;
+  budget : number;
+  genres : Moviekeyword[];
+  homepage : string;
+  id : number;
+  original_title : string;
+  overview : string;
+  popularity : number;
+  poster_path : string;
+  production_companies : MovieProduction[];
+  release_date : string;
+  revenue : number;
+  runtime : number;
+  status : string;
+  tagline : string;
+  title : string;
+  video : boolean;
+  vote_average : number;
+  vote_count : number;
+}
+
+export function getContentDetails(id:string, type:string){
+  return fetch(`${BASE_PATH}/${type}/${id}?api_key=${API_KEY}&language=ko-kr`).then((response) => response.json());
+}
+
+export interface ISimilar {
+  backdrop_path : string;
+  id : number;
+  title : string;
+  poster_path: string;
+  release_date : string;
+  vote_average: number;
+  vote_count : number;
+  overview : string;
+  popularity : number;
+} 
+
+export function getContentSimilars(id:string, type:string){
+  return fetch(`${BASE_PATH}/${type}/${id}/similar?api_key=${API_KEY}&language=ko-kr`).then((response) => response.json());
+}

@@ -3,6 +3,18 @@ import { collection, getDocs, onSnapshot, orderBy, query } from "firebase/firest
 import { useEffect } from "react";
 import { useState } from "react";
 import AppRouter from "./AppRouter";
+import { TailSpin } from  'react-loader-spinner';
+import styled from "styled-components";
+
+
+const Loading = styled.div`
+  width:100vw;
+  height:100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 
 function App() {
 
@@ -56,7 +68,6 @@ function App() {
                     cid: document.id,
                     ...document.data()
                 }));
-                console.log(selectedProfilesArr)
                   setSelectedProfile(selectedProfilesArr as any);
               });
         getSelectedProfile();
@@ -73,7 +84,9 @@ function App() {
       {init ? (
         <AppRouter isLoggedIn={Boolean(isLoggedIn)} currentUser={currentUser} isProfiles={isProfiles} selectedProfile={selectedProfile} />
       ) : (
-        <p>Loading....</p>
+        <Loading>
+          <TailSpin color="#00BFFF" height={80} width={80} />
+        </Loading>
       )}
     </>
   );
