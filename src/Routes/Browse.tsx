@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPen} from "@fortawesome/free-solid-svg-icons"
 import { dbService, storageService } from "fbase";
 import { addDoc, collection, doc, updateDoc  } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
@@ -105,6 +107,7 @@ const UserName = styled.p`
 `;
 
 const ModifyProfile = styled.div`
+position: relative;
   display: flex;
   align-items: center;
   margin: 30px 0px;
@@ -188,6 +191,22 @@ const DeleteBox = styled.span`
   text-align: center;
   line-height: 3.5;
   font-size: 20px;
+`;
+
+const InputFile = styled.input`
+  display: none;
+`;
+const LabelFile = styled.label`
+  position: absolute;
+  bottom : 30px;
+  left : 10px;
+  padding: 10px;
+  background-color:#686868;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 4px 4px 4px 2px rgba(0, 0, 0, 1);
 `;
 
 interface IUserProps {
@@ -353,7 +372,10 @@ function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
           <ProfileBox>
             <ModifyProfile>
               <div>
-                <input type="file" accept="image/*" onChange={onFileChange} />
+                <LabelFile className="input-file-button" htmlFor="input-file">
+                <FontAwesomeIcon icon={faUserPen} />
+                </LabelFile>
+                <InputFile type="file" accept="image/*" onChange={onFileChange} id="input-file" />
                 {attachment !== "" ? (
                   <UserImg>
                     <img

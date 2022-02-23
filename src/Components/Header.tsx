@@ -50,6 +50,8 @@ const Item = styled.li`
   display: flex;
   justify-content: center;
   flex-direction: column;
+  font-size: 24px;
+  font-weight: 600;
   &:hover {
     color: ${(props) => props.theme.white.lighter};
   }
@@ -67,10 +69,10 @@ const Search = styled.form`
 
 const Circle = styled(motion.span)`
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 50px;
+  height: 3px;
   border-radius: 5px;
-  bottom: -5px;
+  bottom: -12px;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -80,7 +82,7 @@ const Circle = styled(motion.span)`
 const Input = styled(motion.input)`
   transform-origin: right center;
   position: absolute;
-  right: 70px;
+  right: 100px;
   padding: 5px 10px;
   padding-left: 40px;
   z-index: -1;
@@ -219,7 +221,7 @@ interface IProp {
 
 function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   const [searchOpen, setSearchOpen] = useState(false);
-  const homeMatch = useRouteMatch("/");
+  const homeMatch = useRouteMatch("/home");
   const tvMatch = useRouteMatch("/tv");
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
@@ -303,7 +305,6 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                 </Item>
               </Items>
             </Col>
-            <Col>{authService.currentUser?.email}님 반갑습니다.</Col>
             <Col>
               <Search onSubmit={handleSubmit(onValid)}>
                 <motion.svg

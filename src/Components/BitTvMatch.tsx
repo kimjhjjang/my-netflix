@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import styled from "styled-components";
 import { makeImagePath } from "utils";
+import Seasons from "./Seasons";
 import SimilarContent from "./SimilarContent";
 
 const Overlay = styled(motion.div)`
@@ -94,16 +95,14 @@ const BigOverview = styled(motion.p)`
 `;
 
 function BigTvMatch({bigTvMatch} : any) {
-    console.log(bigTvMatch);
   const history = useHistory();
-  const { scrollY } = useViewportScroll();
   const onOverlayClick = () => history.push("/tv");
   // Content detail 가져오기
   const { data, isLoading } = useQuery<IGetDetails>(
     ["getTv", bigTvMatch?.params.tvId],
     () => getContentDetails(bigTvMatch?.params.tvId + "", "tv") 
   );
-
+    console.log(data);
     // similar content 가져오기
     const { data: similarData, isLoading:similarLoading } = useQuery<IGetMoviesResult>(
         ["getContentSimilars", bigTvMatch?.params.tvId],
@@ -112,7 +111,7 @@ function BigTvMatch({bigTvMatch} : any) {
 
   return (
     <AnimatePresence>
-      {BigTvMatch ? (
+      {bigTvMatch ? (
         <>
           {isLoading ? (
             "loading"
@@ -142,7 +141,7 @@ function BigTvMatch({bigTvMatch} : any) {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  {data?.title}
+                  {data?.name}
                   <a href={data?.homepage + ""} target="_blank">
                     <span>Homepage</span>
                   </a>
@@ -168,7 +167,7 @@ function BigTvMatch({bigTvMatch} : any) {
                     starSpacing="1px"
                     starRatedColor="tomato"
                     numberOfStars={5}
-                  />{" "}
+                  />
                   ({data?.vote_average} /10)
                   <BigSubTitle>{data?.tagline}</BigSubTitle>
                 </BigDetailBox>
@@ -179,7 +178,8 @@ function BigTvMatch({bigTvMatch} : any) {
                 >
                   {data?.overview}
                 </BigOverview>
-                <SimilarContent bigMovieMatch={BigTvMatch} similarData={similarData!} similarLoading={similarLoading}/>
+                <SimilarContent bigMovieMatch={bigTvMatch} similarData={similarData!} similarLoading={similarLoading}/>
+                <Seasons seasons={data?.seasons}/>
               </BigMovie>
             </>
           )}

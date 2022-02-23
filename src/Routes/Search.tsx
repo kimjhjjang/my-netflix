@@ -88,17 +88,16 @@ function Search() {
           <SearchResult>'{keyword}' 관련 콘텐츠</SearchResult>
 
           <AnimatePresence>
-            {media_type.map((type) => (
-              <>
-                <H1>{type}</H1>
+            {media_type.map((type,i) => (
+              <div key={i}>
+                <H1>{type.toLocaleUpperCase()}</H1>
                 <Row>
                   {data?.results.length !== 0
-                    ? data?.results.map((movie) => (
-                        <>
+                    ? data?.results.map((movie,index) => (
+                        <div key={index+movie.id}>
                           {movie.media_type === type ? (
                             <MovieBox
                               variants={rowVariants}
-                              key={movie.id}
                               initial="origin"
                               whileHover="hover"
                               transition={{ type: "tween" }}
@@ -106,9 +105,9 @@ function Search() {
                               <MediaType>{movie.media_type}</MediaType>
                               <MovieImg
                                 src={
-                                  makeImagePath(movie.backdrop_path, "w300") !==
+                                  makeImagePath(movie.poster_path, "w300") !==
                                   "https://image.tmdb.org/t/p/w300/null"
-                                    ? makeImagePath(movie.backdrop_path, "w300")
+                                    ? makeImagePath(movie.poster_path, "w300")
                                     : "img/noimg.png"
                                 }
                                 alt={
@@ -126,11 +125,11 @@ function Search() {
                               </MovieInfo>
                             </MovieBox>
                           ) : null}
-                        </>
+                        </div>
                       ))
                     : "검색된 콘텐츠가 없습니다."}
                 </Row>
-              </>
+              </div>
             ))}
           </AnimatePresence>
         </Content>

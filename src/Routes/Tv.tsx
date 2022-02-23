@@ -395,7 +395,7 @@ function Tv() {
                         <Item
                           className="thumb"
                           bgphoto={makeImagePath(tv.poster_path, "w500")}
-                        >{makeImagePath(tv.backdrop_path, "w500")}</Item>
+                        ></Item>
                         <Info>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
