@@ -75,16 +75,6 @@ const Info = styled(motion.div)`
   padding: 10px;
 `;
 
-const infoVariants = {
-  hover: {
-    opacity: 1,
-    transition: {
-      delay: 0.5,
-      duaration: 0.1,
-      type: "tween",
-    },
-  },
-};
 
 const Item = styled.div<{ bgphoto: string }>`
   padding-bottom: 100%;
@@ -138,46 +128,6 @@ const TvContent = styled.div`
   color: grey;
 `;
 
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-`;
-
-const BigMovie = styled(motion.div)`
-  position: absolute;
-  width: 40vw;
-  height: 80vh;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  border-radius: 15px;
-  overflow: hidden;
-  background-color: ${(props) => props.theme.black.lighter};
-`;
-
-const BigCover = styled(motion.div)`
-  width: 100%;
-  background-size: cover;
-  background-position: center center;
-  height: 400px;
-`;
-
-const BigTitle = styled(motion.h3)`
-  color: ${(props) => props.theme.white.lighter};
-  padding: 20px;
-  font-size: 46px;
-  position: relative;
-`;
-
-const BigOverview = styled(motion.p)`
-  padding: 20px;
-  position: relative;
-  color: ${(props) => props.theme.white.lighter};
-`;
 
 const MoveBox = styled.div`
   width: 100%;
@@ -185,6 +135,7 @@ const MoveBox = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
 const MoveButton = styled.button`
   height: 400px;
   z-index: 2;
@@ -392,7 +343,7 @@ function Tv() {
                           className="thumb"
                           bgphoto={makeImagePath(tv.poster_path, "w500")}
                         ></Item>
-                        <Info variants={infoVariants}>
+                        <Info>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
                           <StarRatings
@@ -445,7 +396,7 @@ function Tv() {
                           className="thumb"
                           bgphoto={makeImagePath(tv.poster_path, "w500")}
                         >{makeImagePath(tv.backdrop_path, "w500")}</Item>
-                        <Info variants={infoVariants}>
+                        <Info>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
                           <StarRatings
@@ -498,7 +449,7 @@ function Tv() {
                           className="thumb"
                           bgphoto={makeImagePath(tv.poster_path, "w500")}
                         ></Item>
-                        <Info variants={infoVariants}>
+                        <Info>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
                           <StarRatings
@@ -554,7 +505,7 @@ function Tv() {
                             className="thumb"
                             bgphoto={makeImagePath(tv.poster_path, "w500")}
                           ></Item>
-                          <Info variants={infoVariants}>
+                          <Info>
                             <TvTitle>{tv.name}</TvTitle>
                             <TvContent>
                             <StarRatings

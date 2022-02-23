@@ -18,17 +18,61 @@ import StarRatings from "react-star-ratings";
 import { TailSpin } from "react-loader-spinner";
 import BigMovieMatch from "Components/BigMovieMatch";
 
-const Wrapper = styled.div`
-  background: black;
-  padding-bottom: 200px;
-  overflow-y: auto;
-  &::-webkit-scrollbar {
-    width: 4px;
+const Container = styled.div`
+  overflow: hidden;
+`;
+
+const TvList = styled.div`
+  width: 100%;
+  margin: 0 auto;
+`;
+
+const StyleBox = styled.div`
+  position: relative;
+  height: 400px;
+  margin-bottom: 30px;
+`;
+
+const Row = styled(motion.div)`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: auto;
+  grid-gap: 5px;
+  margin-bottom: 30px;
+  min-height: 400px;
+  position: absolute;
+  width: 100%;
+`;
+
+const Box = styled(motion.div)`
+  background-color: rgb(35, 35, 35);
+  text-decoration: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  &:first-child {
+    transform-origin: center left;
   }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 2px;
-    background: #4d4d4d;
+  &:last-child {
+    transform-origin: center right;
   }
+`;
+
+const Info = styled(motion.div)`
+  padding: 10px;
+`;
+
+const Item = styled.div<{ bgphoto: string }>`
+  padding-bottom: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-image: url(${(props) => props.bgphoto});
+`;
+
+const H1 = styled.h1`
+  margin: 0 0 50px 30px;
+  font-size: 36px;
 `;
 
 const Loader = styled.div`
@@ -51,85 +95,25 @@ const Banner = styled.div<{ bgphoto: string }>`
 `;
 
 const Title = styled.h2`
-  font-weight: bold;
-  font-size: 72px;
-  margin-bottom: 20px;
+  font-size: 68px;
+  margin-bottom: 20px; ;
 `;
 
 const Overview = styled.p`
   font-size: 30px;
   width: 50%;
-  font-weight: 500;
 `;
 
-const Slider = styled.div`
-  position: relative;
-  height: 300px;
-  margin-bottom: 30px;
-`;
-
-const Row = styled(motion.div)`
-  display: grid;
-  gap: 5px;
-  grid-template-columns: repeat(6, 1fr);
-  width: 100%;
-  position: absolute;
-`;
-
-const Box = styled(motion.div)<{ bgphoto?: string }>`
-  display: flex;
-  flex-direction: column;
-  &:first-child {
-    transform-origin: center left;
-  }
-  &:last-child {
-    transform-origin: center right;
-  }
-`;
-
-const Info = styled(motion.div)`
-  display: none;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 10px;
-  background-color: ${(props) => props.theme.black.lighter};
-  opacity: 1;
-`;
-
-const InfoTitle = styled.div`
-margin-bottom: 20px;
-  h4{
-    font-size: 20px;
-    font-weight: 600;
-  }
-`;
-
-const InfoBox = styled.div`
-  display: flex;
-  justify-content: space-around;
-`;
-
-const InfoDetailBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const INfoMainTitle = styled.span`
-font-size: 20px;
+const TvTitle = styled.h2`
+  font-size: 20px;
   font-weight: 600;
-`
-
-const InfoSubTitle = styled.span`
-    font-size: 12px;
-    margin-top: 10px;
+  margin-bottom: 10px;
 `;
 
-const H1 = styled.h1`
-  margin: 0 0 50px 60px;
-  font-size: 36px;
+const TvContent = styled.div`
+  font-weight: 400;
+  color: grey;
 `;
-
 
 const rowVariants = {
   hidden: (isBack: boolean) => ({
@@ -150,18 +134,6 @@ const boxVariants = {
   hover: {
     scale: 1.3,
     y: -80,
-    transition: {
-      delay: 0.5,
-      duaration: 0.1,
-      type: "tween",
-    },
-  },
-};
-
-const infoVariants = {
-  hover: {
-    display:"flex",
-    opacity:1,
     transition: {
       delay: 0.5,
       duaration: 0.1,
@@ -297,13 +269,13 @@ function Home() {
 
 
   return (
-    <Wrapper>
+    <>
       {isLoading ? (
         <Loader>
           <TailSpin color="#00BFFF" height={80} width={80} />
         </Loader>
       ) : (
-        <>
+        <Container>
           <Banner bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}>
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
@@ -327,8 +299,9 @@ function Home() {
             popMovies={popMovies!}
             popLoading={popLoading}
           />
+          <TvList>
           <H1>상영중인 콘텐츠</H1>
-          <Slider>
+          <StyleBox>
             <MoveBox>
               <MoveButton onClick={() => prevIndex(0)}>&larr;</MoveButton>
               <MoveButton onClick={() => nextIndex(0)}>&rarr;</MoveButton>
@@ -352,7 +325,6 @@ function Home() {
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={movie.id + ""}
                       key={movie.id}
                       variants={boxVariants}
                       whileHover="hover"
@@ -360,45 +332,29 @@ function Home() {
                       transition={{ type: "tween" }}
                       onClick={() => onBoxClicked(movie.id, "now")}
                     >
-                      <img
-                        src={makeImagePath(movie.backdrop_path, "w300")}
-                        alt={movie.title}
-                      />
-
-                      <Info variants={infoVariants}>
-                        <InfoTitle>
-                          <h4>{movie.title}</h4>
-                          <h5>{movie.original_title}</h5>
-                        </InfoTitle>
-                        <InfoBox>
-                          <InfoDetailBox>
-                            <INfoMainTitle>{movie.vote_count}</INfoMainTitle>
-                            <InfoSubTitle>좋아요 수</InfoSubTitle>
-                          </InfoDetailBox>
-                          <InfoDetailBox>
-                            <StarRatings
+                      <Item
+                          className="thumb"
+                          bgphoto={makeImagePath(movie.poster_path, "w500")}
+                        ></Item>
+                      <Info>
+                          <TvTitle>{movie.title}</TvTitle>
+                          <TvContent>
+                          <StarRatings
                             rating={movie.vote_average / 2}
                             starDimension="20px"
                             starSpacing="1px"
                             starRatedColor="tomato"
                             numberOfStars={5}
-                          />
-                            <InfoSubTitle>({movie.vote_average})</InfoSubTitle>
-                          </InfoDetailBox>
-                          <InfoDetailBox>
-                            <INfoMainTitle>{movie.release_date.substring(0, 4)}년</INfoMainTitle>
-                            <InfoSubTitle>{movie.release_date.substring(5, 7)}월 {movie.release_date.substring(8, 10)}일</InfoSubTitle>
-                          </InfoDetailBox>
-                        </InfoBox>
-                      </Info>
+                          /> ({movie.vote_average} / 10)
+                          </TvContent>
+                        </Info>
                     </Box>
                   ))}
               </Row>
             </AnimatePresence>
-          </Slider>
-
+          </StyleBox>           
            <H1>인기 콘텐츠</H1>
-          <Slider>
+          <StyleBox>
             <MoveBox>
               <MoveButton onClick={() => prevIndex(1)}>&larr;</MoveButton>
               <MoveButton onClick={() => nextIndex(1)}>&rarr;</MoveButton>
@@ -427,47 +383,31 @@ function Home() {
                       whileHover="hover"
                       initial="normal"
                       onClick={() => onBoxClicked(movie.id, "top")}
-                      transition={{ type: "tween" }}
-                      bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
-                      <img
-                        src={makeImagePath(movie.backdrop_path, "w300")}
-                        alt={movie.title}
-                      />
-                      <Info variants={infoVariants}>
-                        <InfoTitle>
-                          <h4>{movie.title}</h4>
-                          <h5>{movie.original_title}</h5>
-                        </InfoTitle>
-                        <InfoBox>
-                          <InfoDetailBox>
-                            <INfoMainTitle>{movie.vote_count}</INfoMainTitle>
-                            <InfoSubTitle>좋아요 수</InfoSubTitle>
-                          </InfoDetailBox>
-                          <InfoDetailBox>
-                            <StarRatings
+                     <Item
+                          className="thumb"
+                          bgphoto={makeImagePath(movie.poster_path, "w500")}
+                        ></Item>
+                      <Info>
+                          <TvTitle>{movie.title}</TvTitle>
+                          <TvContent>
+                          <StarRatings
                             rating={movie.vote_average / 2}
                             starDimension="20px"
                             starSpacing="1px"
                             starRatedColor="tomato"
                             numberOfStars={5}
-                          />
-                            <InfoSubTitle>({movie.vote_average})</InfoSubTitle>
-                          </InfoDetailBox>
-                          <InfoDetailBox>
-                            <INfoMainTitle>{movie.release_date.substring(0, 4)}년</INfoMainTitle>
-                            <InfoSubTitle>{movie.release_date.substring(5, 7)}월 {movie.release_date.substring(8, 10)}일</InfoSubTitle>
-                          </InfoDetailBox>
-                        </InfoBox>
-                      </Info>
+                          /> ({movie.vote_average} / 10)
+                          </TvContent>
+                        </Info>
                     </Box>
                   ))}
               </Row>
             </AnimatePresence>
-          </Slider>
+          </StyleBox>
 
          <H1>개봉 예정 콘텐츠</H1>
-          <Slider>
+          <StyleBox>
             <MoveBox>
               <MoveButton onClick={() => prevIndex(2)}>&larr;</MoveButton>
               <MoveButton onClick={() => nextIndex(2)}>&rarr;</MoveButton>
@@ -497,49 +437,35 @@ function Home() {
                       whileHover="hover"
                       initial="normal"
                       onClick={() => onBoxClicked(movie.id, "coming")}
-                      transition={{ type: "tween" }}
-                      bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                      
                     >
-                      <img
-                        src={makeImagePath(movie.backdrop_path, "w300")}
-                        alt={movie.title}
-                      />
-                      <Info variants={infoVariants}>
-                        <InfoTitle>
-                          <h4>{movie.title}</h4>
-                          <h5>{movie.original_title}</h5>
-                        </InfoTitle>
-                        <InfoBox>
-                          <InfoDetailBox>
-                            <INfoMainTitle>{movie.vote_count}</INfoMainTitle>
-                            <InfoSubTitle>좋아요 수</InfoSubTitle>
-                          </InfoDetailBox>
-                          <InfoDetailBox>
-                            <StarRatings
+                      <Item
+                          className="thumb"
+                          bgphoto={makeImagePath(movie.poster_path, "w500")}
+                        ></Item>
+                      <Info>
+                          <TvTitle>{movie.title}</TvTitle>
+                          <TvContent>
+                          <StarRatings
                             rating={movie.vote_average / 2}
                             starDimension="20px"
                             starSpacing="1px"
                             starRatedColor="tomato"
                             numberOfStars={5}
-                          />
-                            <InfoSubTitle>({movie.vote_average})</InfoSubTitle>
-                          </InfoDetailBox>
-                          <InfoDetailBox>
-                            <INfoMainTitle>{movie.release_date.substring(0, 4)}년</INfoMainTitle>
-                            <InfoSubTitle>{movie.release_date.substring(5, 7)}월 {movie.release_date.substring(8, 10)}일</InfoSubTitle>
-                          </InfoDetailBox>
-                        </InfoBox>
-                      </Info>
+                          /> ({movie.vote_average} / 10)
+                          </TvContent>
+                        </Info>
                     </Box>
                   ))}
               </Row>
             </AnimatePresence>
-          </Slider>
+          </StyleBox>
+          </TvList>
           {bigMovieMatch?.isExact === true ? <BigMovieMatch bigMovieMatch={bigMovieMatch}/>: null}
           
-        </>
+        </Container>
       )}
-    </Wrapper>
+    </>
   );
 }
 export default Home;
