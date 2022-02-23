@@ -17,7 +17,7 @@ const Overlay = styled(motion.div)`
 `;
 
 const BigMovie = styled(motion.div)`
-  position: absolute;
+  position: fixed;
   max-width: 600px;
   height: 80vh;
   left: 0;
@@ -26,6 +26,7 @@ const BigMovie = styled(motion.div)`
   border-radius: 15px;
   background-color: ${(props) => props.theme.black.lighter};
   overflow-y: auto;
+  z-index: 1;
   &::-webkit-scrollbar {
     width: 4px;
   }
@@ -94,7 +95,6 @@ const BigOverview = styled(motion.p)`
 
 function BigMovieMatch({bigMovieMatch} : any) {
   const history = useHistory();
-  const { scrollY } = useViewportScroll();
   const onOverlayClick = () => history.push("/home");
   // Content detail 가져오기
   const { data, isLoading } = useQuery<IGetDetails>(
@@ -125,7 +125,7 @@ function BigMovieMatch({bigMovieMatch} : any) {
                 initial={{ opacity: 0.6 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                style={{ top: scrollY.get() + 100 }}
+                style={{ top: 100 }}
                 layoutId={bigMovieMatch.params.movieId}
               >
                 <BigCover

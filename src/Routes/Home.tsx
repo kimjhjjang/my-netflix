@@ -150,7 +150,7 @@ const MoveBox = styled.div`
 `;
 
 const MoveButton = styled.button`
-  height: 180px;
+  height: 400px;
   z-index: 2;
   opacity: 0.2;
   &:hover {
