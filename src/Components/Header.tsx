@@ -86,7 +86,7 @@ const Search = styled.form`
 
 const Circle = styled(motion.span)`
   position: absolute;
-  width: 35px;
+  width: 32px;
   height: 3px;
   border-radius: 5px;
   bottom: -12px;
@@ -282,9 +282,6 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   };
 
   const [isHover, toggleHover] = useState(false);
-  const toggleHoverMenu = () => {
-    toggleHover((prev) => !prev);
-  };
 
   const onLogOut = () => {
     authService.signOut();
@@ -358,8 +355,9 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                   placeholder="Search for movie or tv show..."
                 />
                 <Account
-                  onHoverStart={toggleHoverMenu}
-                  onHoverEnd={toggleHoverMenu}
+                  onHoverStart={() => toggleHover(true)}
+                  onHoverEnd={() => toggleHover(false)}
+                  onClick={() => toggleHover((prev) => !prev)}
                 >
                   {selectedProfile.length !== 0 ? (
                     selectedProfile.map((profile) => (
