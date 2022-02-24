@@ -352,7 +352,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                   animate={inputAnimation}
                   initial={{ scaleX: 0 }}
                   transition={{ type: "linear" }}
-                  placeholder="Search for movie or tv show..."
+                  placeholder="영화, TV 프로그램을 검색하세요"
                 />
                 <Account
                   onHoverStart={() => toggleHover(true)}

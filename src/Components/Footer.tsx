@@ -5,6 +5,7 @@ const Wrapper = styled.footer`
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
   @media screen and (min-width: 640px) {
     height: 200px;
   }
@@ -29,9 +30,7 @@ function Footer() {
   return (
     <Wrapper>
       <Foot>
-        <small>
           &copy;2022 <strong>my Netflex Clone</strong>, All Rights Reserved
-        </small>
       </Foot>
     </Wrapper>
   );
