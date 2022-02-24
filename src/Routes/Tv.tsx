@@ -1,6 +1,6 @@
 import BigTvMatch from "Components/BitTvMatch";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TailSpin } from "react-loader-spinner";
 import { useQuery } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -26,19 +26,26 @@ const TvList = styled.div`
 
 const StyleBox = styled.div`
   position: relative;
-  height: 400px;
+  height: 350px;
   margin-bottom: 30px;
+  @media screen and (min-width: 640px) {
+    height: 400px;
+  }
 `;
 
 const Row = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
   grid-gap: 5px;
   margin-bottom: 30px;
-  min-height: 400px;
+  min-height: 300px;
   position: absolute;
   width: 100%;
+  @media screen and (min-width: 640px) {
+    grid-template-columns: repeat(6, 1fr);
+    min-height: 400px;
+  }
 `;
 
 const Box = styled(motion.div)`
@@ -101,31 +108,50 @@ const Banner = styled.div<{ bgphoto: string }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 60px;
+  padding: 20px;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgphoto});
   background-size: cover;
+  @media screen and (min-width: 640px) {
+    padding: 60px;
+  }
 `;
 
 const Title = styled.h2`
-  font-size: 68px;
-  margin-bottom: 20px; ;
+  font-size: 22px;
+  margin-bottom: 20px;
+  @media screen and (min-width: 640px) {
+    font-size: 68px;
+  }
 `;
 
 const Overview = styled.p`
-  font-size: 30px;
-  width: 50%;
+  font-size: 16px;
+  width: 90%;
+  line-height: 1.5;
+  @media screen and (min-width: 640px) {
+    font-size: 30px;
+    width: 50%;
+  }
 `;
 
 const TvTitle = styled.h2`
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin: 10px 0px;
+  @media screen and (min-width: 640px) {
+    font-size: 20px;
+    width: 50%;
+  }
 `;
 
 const TvContent = styled.div`
   font-weight: 400;
   color: grey;
+  font-size: 16px;
+  @media screen and (min-width: 640px) {
+    font-size: 20px;
+  }
 `;
 
 
@@ -137,13 +163,27 @@ const MoveBox = styled.div`
 `;
 
 const MoveButton = styled.button`
-  height: 400px;
+  margin-top: 185px;
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
   z-index: 2;
-  opacity: 0.2;
+  border: none;
+  @media screen and (min-width: 640px) {
+    margin-top: 200px;
+  }
   &:hover {
     opacity: 0.8;
   }
 `;
+
+function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height
+  };
+}
 
 function Tv() {
   const { data: toprate, isLoading: topLoading } = useQuery<IGetSearchResult>(
@@ -258,7 +298,22 @@ function Tv() {
     }
   };
 
-  const offset = 6;
+  
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  let offset: number = 6;
+  if(windowDimensions.width < 640){
+    offset = 2
+  }
+
   const loading =
     topLoading || latestLoading || popularLoading || airingLoading;
 

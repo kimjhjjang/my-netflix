@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faCircleXmark} from "@fortawesome/free-regular-svg-icons"
 import { getContentDetails, getContentSimilars, IGetDetails, IGetMoviesResult } from "api";
 import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import { useQuery } from "react-query";
@@ -94,6 +96,13 @@ const BigOverview = styled(motion.p)`
   line-height: 1.8;
 `;
 
+const Xclose = styled.div`
+  position: absolute;
+  right:10px;
+  top:10px;
+  cursor: pointer;
+`;
+
 function BigTvMatch({bigTvMatch} : any) {
   const history = useHistory();
   const onOverlayClick = () => history.push("/tv");
@@ -133,7 +142,11 @@ function BigTvMatch({bigTvMatch} : any) {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   bgphoto={makeImagePath(data?.backdrop_path || "")}
-                />
+                >
+                <Xclose onClick={onOverlayClick}>
+                    <FontAwesomeIcon icon={faCircleXmark} size="2x" color="white"/>
+                  </Xclose>
+                </BigCover>
 
                 <BigTitle
                   initial={{ opacity: 0 }}

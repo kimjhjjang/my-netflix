@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faCircleXmark} from "@fortawesome/free-regular-svg-icons"
 import { getContentDetails, getContentSimilars, IGetDetails, IGetMoviesResult } from "api";
 import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import { useQuery } from "react-query";
@@ -26,7 +28,7 @@ const BigMovie = styled(motion.div)`
   border-radius: 15px;
   background-color: ${(props) => props.theme.black.lighter};
   overflow-y: auto;
-  z-index: 1;
+  z-index: 5;
   &::-webkit-scrollbar {
     width: 4px;
   }
@@ -46,6 +48,12 @@ const BigCover = styled(motion.div)<{ bgphoto: string }>`
   background-size: cover;
 `;
 
+const Xclose = styled.div`
+  position: absolute;
+  right:10px;
+  top:10px;
+  cursor: pointer;
+`;
 const BigTitle = styled(motion.p)`
   color: ${(props) => props.theme.white.lighter};
   padding: 20px;
@@ -133,7 +141,11 @@ function BigMovieMatch({bigMovieMatch} : any) {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   bgphoto={makeImagePath(data?.backdrop_path || "")}
-                />
+                >
+                  <Xclose onClick={onOverlayClick}>
+                    <FontAwesomeIcon icon={faCircleXmark} size="2x" color="white"/>
+                  </Xclose>
+                </BigCover>
 
                 <BigTitle
                   initial={{ opacity: 0 }}

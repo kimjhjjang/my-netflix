@@ -14,9 +14,12 @@ const Nav = styled(motion.nav)`
   width: 100%;
   top: 0;
   font-size: 14px;
-  padding: 20px 60px;
+  padding: 10px 15px;
   color: white;
   z-index: 3;
+  @media screen and (min-width: 640px) {
+    padding: 20px 60px;
+  }
 `;
 
 const Col = styled.div`
@@ -25,10 +28,15 @@ const Col = styled.div`
 `;
 
 const Logo = styled(motion.svg)`
-  margin-right: 50px;
-  width: 95px;
+  margin-right: 20px;
+  width: 60px;
   height: 25px;
   fill: ${(props) => props.theme.red};
+  @media screen and (min-width: 640px) {
+    margin-right: 50px;
+    width: 95px;
+    height: 25px;
+  }
   path {
     stroke-width: 6px;
     /* stroke: white; */
@@ -50,11 +58,15 @@ const Item = styled.li`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 600;
+  @media screen and (min-width: 640px) {
+    font-size: 24px;
+  }
   &:hover {
     color: ${(props) => props.theme.white.lighter};
   }
+  
 `;
 
 const Search = styled.form`
@@ -62,14 +74,19 @@ const Search = styled.form`
   display: flex;
   align-items: center;
   position: relative;
+  
   svg {
     height: 25px;
+    display: none;
+    @media screen and (min-width: 640px) {
+      display: inherit;
+    }
   }
 `;
 
 const Circle = styled(motion.span)`
   position: absolute;
-  width: 50px;
+  width: 35px;
   height: 3px;
   border-radius: 5px;
   bottom: -12px;
@@ -77,6 +94,9 @@ const Circle = styled(motion.span)`
   right: 0;
   margin: 0 auto;
   background-color: ${(props) => props.theme.red};
+  @media screen and (min-width: 640px) {
+    width: 50px;
+  }
 `;
 
 const Input = styled(motion.input)`
@@ -90,6 +110,10 @@ const Input = styled(motion.input)`
   font-size: 16px;
   background-color: transparent;
   border: 1px solid ${(props) => props.theme.white.lighter};
+  display: none;
+  @media screen and (min-width: 640px) {
+      display: inherit;
+  }
 `;
 
 const Account = styled(motion.div)`
@@ -160,6 +184,7 @@ const SelectProfile = styled.div`
   margin: 0px 10px;
   img {
     margin-right: 10px;
+    border-radius: 20px;
   }
 `;
 

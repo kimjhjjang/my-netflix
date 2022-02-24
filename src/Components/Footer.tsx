@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import "../Common/footer.css"
 
 const Wrapper = styled.footer`
     height: 200px;
@@ -32,40 +33,11 @@ const FooterBox = styled.div`
 
 function Footer () {
     return (
-    <Wrapper>
-         <Foot className="footer">
-        <p>고객 센터 1-866-579-7172</p>
-        <FooterBox className="footer-cols">
-          <ul>
-            <li>
-              <span>자주 묻는 질문</span>
-            </li>
-            <li>
-              <span>쿠키 설정</span>
-            </li>
-            
-          </ul>
-          <ul>
-            <li>
-              <span>고객 센터</span>
-            </li>
-            <li>
-              <span>회사 정보</span>
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <span>이용 약관</span>
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <span>개인정보</span>
-            </li>
-          </ul>
-        </FooterBox>
-      </Foot>
-    </Wrapper>
+      <footer>
+      <div className="wrapper">
+        <small>&copy;2022 <strong>my Netflex Clone</strong>, All Rights Reserved</small>
+      </div>
+    </footer>
     )
 }
 

@@ -13,7 +13,7 @@ const Container = styled.div`
 `;
 const Content = styled.div`
   width: 100%;
-  height: 80vh;
+  height: 65vh;
   position: relative;
   background: url("https://i.ibb.co/vXqDmnh/background.jpg") no-repeat center
     center/cover;
@@ -32,10 +32,13 @@ const Content = styled.div`
     box-shadow: inset 120px 100px 250px #000000,
       inset -120px -100px 250px #000000;
   }
+  @media screen and (min-width: 640px) {
+    height: 80vh;
+    }
 `;
 const Showcase = styled.div`
   position: relative;
-  width: 65%;
+  width: 90%;
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -43,19 +46,29 @@ const Showcase = styled.div`
   align-items: center;
   text-align: center;
   z-index: 2;
+  @media screen and (min-width: 640px) {
+    width: 65%;
+    }
   h1 {
     font-weight: 700;
-    font-size: 4rem;
+    font-size: 2rem;
     line-height: 1.4;
     margin: 0 0 2rem;
+    @media screen and (min-width: 640px) {
+      font-size: 4rem;
+    }
   }
   p {
     text-transform: uppercase;
     color: #fff;
     font-weight: 400;
-    font-size: 1.9rem;
+    font-size: 1.3rem;
     line-height: 1.25;
     margin: 0 0 2rem;
+    @media screen and (min-width: 640px) {
+      font-size: 1.9rem;
+      margin: 0 0 2rem;
+    }
   }
 `;
 
@@ -64,22 +77,42 @@ const Section = styled.div`
   justify-content: center;
   align-items: center;
   padding: 30px;
+  flex-direction: column;
+  @media screen and (min-width: 640px) {
+    flex-direction: row;
+  }
 `;
 
 const TextBox = styled.div`
-  max-width: 500px;
+  max-width: 400px;
+  margin-bottom: 30px;
+  @media screen and (min-width: 640px) {
+    max-width: 500px;
+    margin-bottom: 0px;
+  }
   h2 {
-    font-size: 48px;
+    font-size: 22px;
     margin-bottom: 25px;
     font-weight: 600;
+    @media screen and (min-width: 640px) {
+      font-size: 48px;
+    }
   }
   p {
-    font-size: 27px;
+    font-size: 18px;
     font-weight: 500;
+    @media screen and (min-width: 640px) {
+      font-size: 27px;
+    }
   }
 `;
 
-const ImgBox = styled.div``;
+const ImgBox = styled.div`
+  max-width: 400px;
+  img {
+    width:100%;
+  }
+`;
 
 const Form = styled.form`
   display: flex;
