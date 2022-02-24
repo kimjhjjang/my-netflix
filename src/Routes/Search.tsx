@@ -17,7 +17,6 @@ const Content = styled.div`
 `;
 
 const SearchResult = styled.h1`
-  width: 100vw;
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 10px;
@@ -32,7 +31,6 @@ const Row = styled(motion.div)`
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  width: 100vw;
   justify-content: center;
 `;
 
@@ -86,19 +84,6 @@ const TvContent = styled.div`
   }
 `;
 
-const rowVariants = {
-  origin: {
-    scale: 1,
-  },
-  hover: {
-    scale: 1.3,
-    y: -40,
-    transition: {
-      delay: 0.3,
-      type: "tween",
-    },
-  },
-};
 
 const H1 = styled.h1`
   margin: 40px 0 40px 30px;

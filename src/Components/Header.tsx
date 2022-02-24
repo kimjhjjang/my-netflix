@@ -50,6 +50,24 @@ const Items = styled.ul`
   align-items: center;
 `;
 
+const MobileSearch = styled.li`
+  margin-right: 20px;
+  color: ${(props) => props.theme.white.darker};
+  transition: color 0.3s ease-in-out;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: 600;
+  @media screen and (min-width: 640px) {
+    display: none;
+  }
+  &:hover {
+    color: ${(props) => props.theme.white.lighter};
+  }
+`;
+
 const Item = styled.li`
   margin-right: 20px;
   color: ${(props) => props.theme.white.darker};
@@ -66,7 +84,6 @@ const Item = styled.li`
   &:hover {
     color: ${(props) => props.theme.white.lighter};
   }
-  
 `;
 
 const Search = styled.form`
@@ -74,7 +91,7 @@ const Search = styled.form`
   display: flex;
   align-items: center;
   position: relative;
-  
+
   svg {
     height: 25px;
     display: none;
@@ -102,18 +119,34 @@ const Circle = styled(motion.span)`
 const Input = styled(motion.input)`
   transform-origin: right center;
   position: absolute;
-  right: 100px;
+  right: 125px;
   padding: 5px 10px;
   padding-left: 40px;
   z-index: -1;
   color: white;
-  font-size: 16px;
-  background-color: transparent;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: black;
   border: 1px solid ${(props) => props.theme.white.lighter};
   display: none;
   @media screen and (min-width: 640px) {
-      display: inherit;
+    display: inherit;
   }
+`;
+
+const MobileSearchForm = styled.form`
+  position: absolute;
+  width: 100%;
+  top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const MobileInput = styled.input`
+  width: 95%;
+  font-size: 16px;
+  padding: 10px;
 `;
 
 const Account = styled(motion.div)`
@@ -248,6 +281,10 @@ interface IProp {
 }
 
 function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
+  const [mobileSearchView, setMobileSearchView] = useState(false);
+  const onMobileSearchView = () => {
+    setMobileSearchView((prev) => !prev);
+  };
   const useLogin = useRouteMatch<{ movieId: string }>("/login");
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useRouteMatch("/home");
@@ -279,6 +316,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   const { register, handleSubmit } = useForm<IForm>();
   const onValid = (data: IForm) => {
     history.push(`/search?keyword=${data.keyword}`);
+    setMobileSearchView(false);
   };
 
   const [isHover, toggleHover] = useState(false);
@@ -289,19 +327,31 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   };
 
   const onSelectProfile = async (profile: any) => {
-    if(selectedProfile.length === 0){
+    if (selectedProfile.length === 0) {
       await addDoc(collection(dbService, "selectedProfile"), profile);
       history.push("/home");
-    }else{
-      const profileUpdateText = doc(dbService, "selectedProfile", selectedProfile[0].cid);
+    } else {
+      const profileUpdateText = doc(
+        dbService,
+        "selectedProfile",
+        selectedProfile[0].cid
+      );
       await updateDoc(profileUpdateText, profile);
-      history.push("/home"); 
+      history.push("/home");
     }
   };
 
   return (
     <>
       <Nav variants={navVariants} animate={navAnimation} initial={"top"}>
+        {mobileSearchView ? (
+          <MobileSearchForm onSubmit={handleSubmit(onValid)}>
+            <MobileInput
+              {...register("keyword", { required: true })}
+              placeholder="영화, TV 프로그램을 검색하세요"
+            />
+          </MobileSearchForm>
+        ) : null}
         {isLoggedIn ? (
           <>
             <Col>
@@ -329,13 +379,16 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                     티비 {tvMatch && <Circle layoutId="circle" />}
                   </Link>
                 </Item>
+                <MobileSearch onClick={onMobileSearchView}>
+                    검색 {tvMatch && <Circle layoutId="circle" />}
+                </MobileSearch>
               </Items>
             </Col>
             <Col>
               <Search onSubmit={handleSubmit(onValid)}>
                 <motion.svg
                   onClick={toggleSearch}
-                  animate={{ x: searchOpen ? -215 : 0 }}
+                  animate={{ x: searchOpen ? -265 : 0 }}
                   transition={{ type: "linear" }}
                   fill="currentColor"
                   viewBox="0 0 20 20"
@@ -352,7 +405,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                   animate={inputAnimation}
                   initial={{ scaleX: 0 }}
                   transition={{ type: "linear" }}
-                  placeholder="영화, TV 프로그램을 검색하세요"
+                  placeholder="검색해 보세요"
                 />
                 <Account
                   onHoverStart={() => toggleHover(true)}
@@ -456,13 +509,13 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                 </Logo>
               </Link>
             </Col>
-            {!useLogin?.isExact && 
-            <Col>
-              <Link to="/login">
-                <Login>로그인</Login>
-              </Link>
-            </Col>
-            }
+            {!useLogin?.isExact && (
+              <Col>
+                <Link to="/login">
+                  <Login>로그인</Login>
+                </Link>
+              </Col>
+            )}
           </>
         )}
       </Nav>

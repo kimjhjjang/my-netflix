@@ -54,8 +54,8 @@ export function getMovies() {
 }
 
 export function getSearchMovies(keyword: string, page?: string) {
-  const url = `${BASE_PATH}/search/multi?api_key=${API_KEY}&language=ko-kr&query=${keyword}&page=${page}&include_adult=false`;
-  return fetch(url).then((response) => response.json());
+    const url = `${BASE_PATH}/search/multi?api_key=${API_KEY}&language=ko-kr&query=${keyword}&page=${page}&include_adult=false`;
+    return fetch(url).then((response) => response.json());
 }
 
 interface IPopularMovies {
