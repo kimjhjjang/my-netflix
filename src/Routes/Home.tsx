@@ -48,7 +48,7 @@ const Row = styled(motion.div)`
   width: 100%;
   @media screen and (min-width: 640px) {
     grid-template-columns: repeat(6, 1fr);
-    min-height: 400px;
+    min-height: 320px;
   }
 `;
 
@@ -129,10 +129,6 @@ const TvTitle = styled.h2`
   font-size: 16px;
   font-weight: 600;
   margin: 10px 0px;
-  @media screen and (min-width: 640px) {
-    font-size: 20px;
-    width: 50%;
-  }
 `;
 
 const TvContent = styled.div`

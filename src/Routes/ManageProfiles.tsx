@@ -26,21 +26,31 @@ const Container = styled.div`
 
 const UserBox = styled(motion.div)`
   max-width: 80%;
+  margin-bottom: 10px;
+  @media screen and (min-width: 640px) {
+    margin-bottom: 100px;
+  }
 `;
 
 const H1 = styled.h1`
   width: 100%;
   color: #fff;
-  font-size: 3.5vw;
   font-weight: unset;
   margin-bottom: 30px;
-  font-weight: 400;
+  font-weight: 600;
+  text-align: center;
+  font-size: 20px;
+  @media screen and (min-width: 640px) {
+    font-size: 3.5vw;
+  }
 `;
 
 const Users = styled(motion.ul)`
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 `;
 
 const User = styled(motion.li)`
@@ -50,6 +60,10 @@ const User = styled(motion.li)`
   display: inline-block;
   margin: 0 2vw 0 0;
   cursor: pointer;
+  margin-bottom: 20px;
+  @media screen and (min-width: 640px) {
+    margin-bottom: 0px;
+  }
   &:hover {
     div {
       border: 2px solid white;
@@ -95,12 +109,16 @@ const UserImg = styled.div`
 `;
 
 const UserName = styled.p`
-  font-size: 24px;
+ font-size: 20px;
   font-weight: 600;
   width: 100%;
   text-align: center;
-  margin-top: 30px;
+  margin-top: 15px;
   color: grey;
+  @media screen and (min-width: 640px) {
+    font-size: 24px;
+    margin-top: 30px;
+  }
 `;
 
 const userVariants = {
@@ -121,22 +139,36 @@ const userVariants = {
 const DeleteBox = styled.span`
   text-align: center;
   line-height: 3.5;
-  font-size: 20px;
+  font-size: 16px;
+  padding: 10px 30px;
+  border: 1px solid white;
+  @media screen and (min-width: 640px) {
+    font-size: 20px;
+    padding: 20px 50px;
+  }
 `;
 
 const EditBoxForm = styled(motion.form)``;
 
 const AddInput = styled.input`
-  width: 18em;
+  width: 90%;
   height: 2em;
   background: #666;
   border: 1px solid transparent;
-  margin: 0 0.8em 0 0.8em;
-  padding: 0.2em 0.6em;
+  margin: 0;
+  padding: 0px 20px;
   color: #fff;
-  font-size: 1.3vw;
+  font-size: 18px;
   box-sizing: border-box;
   text-indent: 0.1vw;
+  margin-left:15px;
+  @media screen and (min-width: 640px) {
+    width: 18em;
+    margin-top: 30px;
+    font-size: 1.3vw;
+    margin: 0 0.8em 0 0.8em;
+    padding: 0.2em 0.6em;
+  }
 `;
 
 const ProfileBox = styled(motion.div)`
@@ -154,17 +186,10 @@ const ModifyProfile = styled.div`
   padding: 20px 0px;
 `;
 
-const H2 = styled.h2`
-  color: grey;
-  font-size: 1.7vw;
-  padding: 15px;
-  margin-top: 1vh;
-`;
-
 const SaveBnt = styled.button`
   display: inline-block;
-  margin-right: 20px;
-  font-size: 1.2vw;
+  margin-right: 10px;
+  font-size: 15px;
   border: 1px solid grey;
   padding: 0.5em 1.5em;
   letter-spacing: 2px;
@@ -172,6 +197,10 @@ const SaveBnt = styled.button`
   background-color: white;
   color: black;
   font-weight: 700;
+  @media screen and (min-width: 640px) {
+    font-size: 1.2vw;
+    margin-right: 20px;
+  }
   &:hover {
     background-color: tomato;
   }
@@ -179,8 +208,8 @@ const SaveBnt = styled.button`
 
 const Bnt = styled.span`
   display: inline-block;
-  margin-right: 20px;
-  font-size: 1.2vw;
+  margin-right: 10px;
+  font-size: 15px;
   border: 1px solid grey;
   padding: 0.5em 1.5em;
   letter-spacing: 2px;
@@ -188,6 +217,10 @@ const Bnt = styled.span`
   background-color: black;
   color: white;
   font-weight: 700;
+  @media screen and (min-width: 640px) {
+    font-size: 1.2vw;
+    margin-right: 20px;
+  }
   &:hover {
     background-color: tomato;
   }
@@ -195,8 +228,12 @@ const Bnt = styled.span`
 
 const AddBox = styled.div`
   display: flex;
+  align-items: center;
   flex-direction: column;
-  height: 10vw;
+  width: 100%;
+  @media screen and (min-width: 640px) {
+    flex-direction: row;
+  }
 `;
 
 const ChildInput = styled.input`
@@ -204,16 +241,21 @@ const ChildInput = styled.input`
   border-radius: 0;
   display: inline-block;
   position: relative;
-  margin-left: 30px;
-  font-size: 0.8vw;
+  margin-right: 0.5em;
+  font-size: 12px;
   width: 2.5em;
   height: 2.5em;
+  @media screen and (min-width: 640px) {
+    font-size: 0.8vw;
+  }
 `;
 
 const CHeckBox = styled.div`
   display: flex;
   align-items: center;
-  font-size: 20px;
+  align-self: flex-start;
+  margin-top: 10px;
+  margin-left: 10px;
 `;
 
 const InputFile = styled.input`
@@ -233,7 +275,15 @@ const LabelFile = styled.label`
 `;
 
 const EditInputBox = styled.div``;
-const EditCheckBox = styled.div``;
+const EditCheckBox = styled.div`
+display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  @media screen and (min-width: 640px) {
+    flex-direction: row;
+  }
+`;
 
 interface IUserProps {
   name: string;
@@ -385,11 +435,6 @@ function ManageProfiles({ currentUser, isProfiles, selectedProfile }: IProps) {
           </UserBox>
           <Link
             to="/browse"
-            style={{
-              marginTop: "100px",
-              padding: "0px 50px",
-              border: "1px solid white",
-            }}
           >
             <DeleteBox>완료</DeleteBox>
           </Link>
@@ -439,7 +484,6 @@ function ManageProfiles({ currentUser, isProfiles, selectedProfile }: IProps) {
                   />
                 </EditInputBox>
                 <EditCheckBox>
-                  <H2>옵션 설정</H2>
                   <CHeckBox>
                     <ChildInput
                       type="checkbox"

@@ -21,6 +21,10 @@ const Container = styled.div`
 
 const UserBox = styled(motion.div)`
   max-width: 80%;
+  margin-bottom: 10px;
+  @media screen and (min-width: 640px) {
+    margin-bottom: 100px;
+  }
 `;
 
 const ProfileBox = styled(motion.div)`
@@ -31,14 +35,23 @@ const ProfileBox = styled(motion.div)`
 const H1 = styled.h1`
   width: 100%;
   color: #fff;
-  font-size: 3.5vw;
   font-weight: unset;
   margin-bottom: 30px;
-  font-weight: 400;
+  font-weight: 600;
+  text-align: center;
+  font-size: 20px;
+  @media screen and (min-width: 640px) {
+    font-size: 3.5vw;
+  }
 `;
 const H2 = styled.h2`
   color: grey;
-  font-size: 24px;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  @media screen and (min-width: 640px) {
+    font-size: 24px;
+  }
 `;
 
 const Users = styled.ul`
@@ -46,6 +59,8 @@ const Users = styled.ul`
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  
 `;
 
 const User = styled(motion.li)`
@@ -55,6 +70,10 @@ const User = styled(motion.li)`
   display: inline-block;
   margin: 0 2vw 0 0;
   cursor: pointer;
+  margin-bottom: 20px;
+  @media screen and (min-width: 640px) {
+    margin-bottom: 0px;
+  }
   &:hover {
     div {
       border: 2px solid white;
@@ -98,12 +117,16 @@ const PlusIcon = styled.div`
 `;
 
 const UserName = styled.p`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
   width: 100%;
   text-align: center;
-  margin-top: 30px;
+  margin-top: 15px;
   color: grey;
+  @media screen and (min-width: 640px) {
+    font-size: 24px;
+    margin-top: 30px;
+  }
 `;
 
 const ModifyProfile = styled.div`
@@ -119,21 +142,33 @@ position: relative;
 const AddBox = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: column;
+  width: 100%;
+  @media screen and (min-width: 640px) {
+    flex-direction: row;
+  }
 `;
 
 const AddBoxForm = styled(motion.form)``;
 
 const AddInput = styled.input`
-  width: 18em;
+  width: 90%;
   height: 2em;
   background: #666;
   border: 1px solid transparent;
-  margin: 0 0.8em 0 0.8em;
-  padding: 0.2em 0.6em;
+  margin: 0;
+  padding: 0px 20px;
   color: #fff;
-  font-size: 1.3vw;
+  font-size: 18px;
   box-sizing: border-box;
   text-indent: 0.1vw;
+  @media screen and (min-width: 640px) {
+    width: 18em;
+    margin-top: 30px;
+    font-size: 1.3vw;
+    margin: 0 0.8em 0 0.8em;
+    padding: 0.2em 0.6em;
+  }
 `;
 
 const useVariants = {
@@ -151,37 +186,54 @@ const useVariants = {
   },
 };
 
+const ChildBox = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  margin-top: 10px;
+  margin-left: 10px;
+`
+
 const ChildInput = styled.input`
   border: 1px solid #333;
   border-radius: 0;
   display: inline-block;
   position: relative;
   margin-right: 0.5em;
-  font-size: 0.8vw;
+  font-size: 12px;
   width: 2.5em;
   height: 2.5em;
+  @media screen and (min-width: 640px) {
+    font-size: 0.8vw;
+  }
 `;
 
 const Bnt = styled.button`
-  padding: 20px 40px;
+  padding: 10px 20px;
   background-color: white;
   color: black;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
+  @media screen and (min-width: 640px) {
+    padding: 20px 40px;
+  }
   &:hover {
     background-color: tomato;
   }
 `;
 
 const Sbnt = styled.span`
-  padding: 20px 40px;
+  padding: 10px 20px;
   background-color: grey;
   color: black;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
   margin-left: 20px;
+  @media screen and (min-width: 640px) {
+    padding: 20px 40px;
+  }
   &:hover {
     background-color: tomato;
   }
@@ -190,7 +242,13 @@ const Sbnt = styled.span`
 const DeleteBox = styled.span`
   text-align: center;
   line-height: 3.5;
-  font-size: 20px;
+  font-size: 16px;
+  padding: 10px 30px;
+  border: 1px solid white;
+  @media screen and (min-width: 640px) {
+    font-size: 20px;
+    padding: 20px 50px;
+  }
 `;
 
 const InputFile = styled.input`
@@ -200,13 +258,17 @@ const LabelFile = styled.label`
   position: absolute;
   bottom : 30px;
   left : 10px;
-  padding: 10px;
+  padding: 5px;
   background-color:#686868;
-  border-radius: 20px;
+  border-radius: 10px;
   color: white;
   cursor: pointer;
   z-index: 2;
   box-shadow: 4px 4px 4px 2px rgba(0, 0, 0, 1);
+  @media screen and (min-width: 640px) {
+    padding: 10px;
+    border-radius: 20px;
+  }
 `;
 
 interface IUserProps {
@@ -349,11 +411,6 @@ function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
           </UserBox>
           <Link
             to="/manageProfiles"
-            style={{
-              marginTop: "100px",
-              padding: "0px 50px",
-              border: "1px solid white",
-            }}
           >
             <DeleteBox>프로필 관리</DeleteBox>
           </Link>
@@ -402,9 +459,11 @@ function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
                   placeholder="이름"
                 />
                 <label htmlFor="add-profile-name" aria-label="이름"></label>
+                <ChildBox>
                 <ChildInput type="checkbox" {...register("child")} />
                 <label htmlFor="add-kids-profile"></label>
                 <span>어린이인가요?</span>
+                </ChildBox>
                 {/* <span className="kids-profile-tooltip">
                   이 옵션을 선택하시면 이 프로필에 만 12세 이하 등급의 시리즈와
                   영화만 표시됩니다.
