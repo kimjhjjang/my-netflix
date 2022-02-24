@@ -121,6 +121,7 @@ const Banner = styled.div<{ bgphoto: string }>`
 const Title = styled.h2`
   font-size: 22px;
   margin-bottom: 20px;
+  font-weight: bold;
   @media screen and (min-width: 640px) {
     font-size: 68px;
   }
