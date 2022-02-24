@@ -99,7 +99,7 @@ const TextBox = styled.div`
     }
   }
   p {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     line-height: 1.5;
     @media screen and (min-width: 640px) {
