@@ -148,10 +148,13 @@ const Arrow = styled(motion.div)`
 
 const Login = styled.span`
   background-color: #e50914;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border-radius: 5px;
   font-weight: 600;
   cursor: pointer;
+  @media screen and (min-width: 640px) {
+    padding: 10px 20px;
+  }
 `;
 
 const logoVariants = {
@@ -245,6 +248,7 @@ interface IProp {
 }
 
 function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
+  const useLogin = useRouteMatch<{ movieId: string }>("/login");
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useRouteMatch("/home");
   const tvMatch = useRouteMatch("/tv");
@@ -454,11 +458,13 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                 </Logo>
               </Link>
             </Col>
+            {!useLogin?.isExact && 
             <Col>
               <Link to="/login">
                 <Login>로그인</Login>
               </Link>
             </Col>
+            }
           </>
         )}
       </Nav>

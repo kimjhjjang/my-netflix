@@ -52,17 +52,24 @@ const LoginBox = styled.div`
 
 const H1 = styled.h1`
   width: 100%;
-  font-size: 32px;
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 30px;
+  @media screen and (min-width: 640px) {
+    font-size: 32px;
+  }
 `;
 
 const HH1 = styled.h1`
   width: 100%;
-  font-size: 40px;
+  font-size: 20px;
   font-weight: bold;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   text-align: center;
+  @media screen and (min-width: 640px) {
+    font-size: 40px;
+    margin-bottom: 30px;
+  }
 `;
 
 const Form = styled.form`
@@ -118,7 +125,7 @@ const ErrorText = styled.span`
   font-weight: 500;
 `;
 const SignIn = styled.div`
-  min-width: 400px;
+  max-width: 480px;
   text-align: center;
   margin-top: 30px;
 `;
@@ -145,14 +152,12 @@ interface IProps {
 
 function Signup({isLoggedIn}: IProps) {
   const history = useHistory();
-  const [isSignUp, setIsSignUp] = useState(false);
   const { register, handleSubmit,formState: { errors },} = useForm<ILogin>();
   const [error, setError] = useState("");
   const onValid = async ({ email, password }: ILogin) => {
       const auth = getAuth();
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            setIsSignUp(true);
             setTimeout(() => {
               history.push("/home");
             }, 5000)
@@ -219,7 +224,7 @@ function Signup({isLoggedIn}: IProps) {
           {error && <span className="authError">{error}</span>}
 
           <SignIn>
-            <p>이메일과 비밀번호를 통한 회원가입이 가능합니다.</p>
+            <p>빠른 회원가입을 위해 이메일과 비밀번호 인증을 최소화 하였습니다.</p>
          </SignIn>
 
         </LoginBox>

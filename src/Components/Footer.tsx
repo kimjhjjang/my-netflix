@@ -1,18 +1,22 @@
 import styled from "styled-components";
-import "../Common/footer.css"
 
 const Wrapper = styled.footer`
+  height: 80px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  @media screen and (min-width: 640px) {
     height: 200px;
-    position: relative;
-    display:flex;
-    justify-content : center;
+  }
 `;
 
-
 const Foot = styled.div`
-  max-width: 70%;
-  margin: 1rem auto;
+  max-width: 90%;
+  margin: 0 auto;
   overflow: auto;
+  @media screen and (min-width: 640px) {
+    max-width: 70%;
+  }
   p {
     margin-bottom: 1.5rem;
   }
@@ -21,24 +25,16 @@ const Foot = styled.div`
   }
 `;
 
-const FooterBox = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 2rem;
-  width: 50vw;
-`;
-
-
-
-
-function Footer () {
-    return (
-      <footer>
-      <div className="wrapper">
-        <small>&copy;2022 <strong>my Netflex Clone</strong>, All Rights Reserved</small>
-      </div>
-    </footer>
-    )
+function Footer() {
+  return (
+    <Wrapper>
+      <Foot>
+        <small>
+          &copy;2022 <strong>my Netflex Clone</strong>, All Rights Reserved
+        </small>
+      </Foot>
+    </Wrapper>
+  );
 }
 
 export default Footer;

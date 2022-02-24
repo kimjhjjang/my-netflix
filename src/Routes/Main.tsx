@@ -62,7 +62,7 @@ const Showcase = styled.div`
     text-transform: uppercase;
     color: #fff;
     font-weight: 400;
-    font-size: 1.3rem;
+    font-size: 1rem;
     line-height: 1.25;
     margin: 0 0 2rem;
     @media screen and (min-width: 640px) {
@@ -101,6 +101,7 @@ const TextBox = styled.div`
   p {
     font-size: 18px;
     font-weight: 500;
+    line-height: 1.5;
     @media screen and (min-width: 640px) {
       font-size: 27px;
     }
@@ -150,22 +151,27 @@ const Form = styled.form`
 `;
 
 const StartBtn = styled.button`
-    height: 70px;
+    height: 50px;
     background-color: #e50914;
     border : none;
-    width: 10vw;
-    font-size: 24px;
+    width: 100px;
+    font-size: 15px;
     font-weight: 500;
     color: white;
+    @media screen and (min-width: 640px) {
+      font-size: 27px;
+      width: 10vw;
+      height: 70px;
+    }
 `;
 
-const ErrorText = styled.span`
+/* const ErrorText = styled.span`
     position: absolute;
     top:85px;
     color : #ffa00a;
     font-size: 18px;
     font-weight: 500;
-`;
+`; */
 
 interface IEmail {
   email : string;
@@ -176,7 +182,7 @@ interface IProps {
 }
 
 function Main({isLoggedIn}:IProps) {
-    const {register, handleSubmit, formState:{errors}} = useForm<IEmail>();
+    const { handleSubmit} = useForm<IEmail>();
     const history = useHistory();
     const onValid = ({email} : IEmail) => {
         history.push("/login");

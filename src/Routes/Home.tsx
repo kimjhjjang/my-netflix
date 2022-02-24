@@ -232,13 +232,13 @@ function Home() {
   );
 
   // 인기 콘텐츠
-  const { data: topMovies, isLoading: topLoading } = useQuery<IGetMoviesResult>(
+  const { data: topMovies/* , isLoading: topLoading */ } = useQuery<IGetMoviesResult>(
     ["movies", "topMovie"],
     getTopRateMovie
   );
 
   //개봉 영화
-  const { data: comingMovies, isLoading: comingLoading } =
+  const { data: comingMovies/* , isLoading: comingLoading */ } =
     useQuery<IGetMoviesResult>(["movies", "upcomingMovie"], getUpcomingMovie);
 
   const [isBack, setIsBack] = useState(false);
