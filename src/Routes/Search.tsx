@@ -7,7 +7,6 @@ import { getSearchMovies, IGetSearchResult } from "../api";
 import { makeImagePath } from "../utils";
 
 const Content = styled.div`
-  width: 1500px;
   position: relative;
   margin: 0 auto;
   margin-top: 100px;

@@ -137,10 +137,12 @@ const Input = styled(motion.input)`
 const MobileSearchForm = styled.form`
   position: absolute;
   width: 100%;
+  left:0;
   top: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 `;
 
 const MobileInput = styled.input`
@@ -233,6 +235,16 @@ const adminVariants = {
   },
 };
 
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+`;
+
 const navVariants = {
   top: {
     backgroundColor: "rgba(0, 0, 0, 0)",
@@ -289,6 +301,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useRouteMatch("/home");
   const tvMatch = useRouteMatch("/tv");
+  const searchMatch = useRouteMatch("/search");
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useViewportScroll();
@@ -345,12 +358,15 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
     <>
       <Nav variants={navVariants} animate={navAnimation} initial={"top"}>
         {mobileSearchView ? (
-          <MobileSearchForm onSubmit={handleSubmit(onValid)}>
-            <MobileInput
-              {...register("keyword", { required: true })}
-              placeholder="영화, TV 프로그램을 검색하세요"
-            />
-          </MobileSearchForm>
+          <>
+            <MobileSearchForm onSubmit={handleSubmit(onValid)}>
+              <MobileInput
+                {...register("keyword", { required: true })}
+                placeholder="영화, TV 프로그램을 검색하세요"
+              />
+            </MobileSearchForm>
+            <Overlay exit={{ opacity: 0 }} animate={{ opacity: 1 }} />
+          </>
         ) : null}
         {isLoggedIn ? (
           <>
@@ -380,7 +396,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                   </Link>
                 </Item>
                 <MobileSearch onClick={onMobileSearchView}>
-                    검색 {tvMatch && <Circle layoutId="circle" />}
+                  검색 {searchMatch && <Circle layoutId="circle" />}
                 </MobileSearch>
               </Items>
             </Col>
