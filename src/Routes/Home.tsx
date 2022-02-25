@@ -98,7 +98,7 @@ const Loader = styled.div`
 `;
 
 const Banner = styled.div<{ bgphoto: string }>`
-  height: 60vh;
+  height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -106,11 +106,9 @@ const Banner = styled.div<{ bgphoto: string }>`
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgphoto});
   background-size: cover;
-  background-position: center; 
+  background-position: center;
   @media screen and (min-width: 640px) {
-    height: 70vh;
     padding: 60px;
-    background-image: none;
   }
 `;
 
@@ -334,7 +332,7 @@ function Home() {
       ) : (
         <Container>
           <Banner bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}>
-            <BackgroundMovie id={data?.results[0].id+""}  /> 
+            {/* <BackgroundMovie id={data?.results[0].id+""}  /> */}
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
             <button

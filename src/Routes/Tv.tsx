@@ -82,7 +82,6 @@ const Info = styled(motion.div)`
   padding: 10px;
 `;
 
-
 const Item = styled.div<{ bgphoto: string }>`
   padding-bottom: 100%;
   background-size: cover;
@@ -156,7 +155,6 @@ const TvContent = styled.div`
   }
 `;
 
-
 const MoveBox = styled.div`
   width: 100%;
   position: absolute;
@@ -183,7 +181,7 @@ function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
   return {
     width,
-    height
+    height,
   };
 }
 
@@ -300,20 +298,21 @@ function Tv() {
     }
   };
 
-  
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
   useEffect(() => {
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
     }
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   let offset: number = 6;
-  if(windowDimensions.width < 640){
-    offset = 2
+  if (windowDimensions.width < 640) {
+    offset = 2;
   }
 
   const loading =
@@ -357,7 +356,7 @@ function Tv() {
                 padding: "10px",
                 fontSize: "15px",
                 fontWeight: 600,
-                marginTop:"20px"
+                marginTop: "20px",
               }}
             >
               상세 정보
@@ -403,13 +402,14 @@ function Tv() {
                         <Info>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
-                          <StarRatings
-                            rating={tv.vote_average / 2}
-                            starDimension="20px"
-                            starSpacing="1px"
-                            starRatedColor="tomato"
-                            numberOfStars={5}
-                          /> ({tv.vote_average} / 10)
+                            <StarRatings
+                              rating={tv.vote_average / 2}
+                              starDimension="20px"
+                              starSpacing="1px"
+                              starRatedColor="tomato"
+                              numberOfStars={5}
+                            />{" "}
+                            ({tv.vote_average} / 10)
                           </TvContent>
                         </Info>
                       </Box>
@@ -456,13 +456,14 @@ function Tv() {
                         <Info>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
-                          <StarRatings
-                            rating={tv.vote_average / 2}
-                            starDimension="20px"
-                            starSpacing="1px"
-                            starRatedColor="tomato"
-                            numberOfStars={5}
-                          /> ({tv.vote_average} / 10)
+                            <StarRatings
+                              rating={tv.vote_average / 2}
+                              starDimension="20px"
+                              starSpacing="1px"
+                              starRatedColor="tomato"
+                              numberOfStars={5}
+                            />{" "}
+                            ({tv.vote_average} / 10)
                           </TvContent>
                         </Info>
                       </Box>
@@ -509,13 +510,14 @@ function Tv() {
                         <Info>
                           <TvTitle>{tv.name}</TvTitle>
                           <TvContent>
-                          <StarRatings
-                            rating={tv.vote_average / 2}
-                            starDimension="20px"
-                            starSpacing="1px"
-                            starRatedColor="tomato"
-                            numberOfStars={5}
-                          /> ({tv.vote_average} / 10)
+                            <StarRatings
+                              rating={tv.vote_average / 2}
+                              starDimension="20px"
+                              starSpacing="1px"
+                              starRatedColor="tomato"
+                              numberOfStars={5}
+                            />{" "}
+                            ({tv.vote_average} / 10)
                           </TvContent>
                         </Info>
                       </Box>
@@ -565,13 +567,14 @@ function Tv() {
                           <Info>
                             <TvTitle>{tv.name}</TvTitle>
                             <TvContent>
-                            <StarRatings
-                            rating={tv.vote_average / 2}
-                            starDimension="20px"
-                            starSpacing="1px"
-                            starRatedColor="tomato"
-                            numberOfStars={5}
-                          /> ({tv.vote_average} / 10)
+                              <StarRatings
+                                rating={tv.vote_average / 2}
+                                starDimension="20px"
+                                starSpacing="1px"
+                                starRatedColor="tomato"
+                                numberOfStars={5}
+                              />{" "}
+                              ({tv.vote_average} / 10)
                             </TvContent>
                           </Info>
                         </Box>
@@ -586,7 +589,9 @@ function Tv() {
             </StyleBox>
           </TvList>
 
-          {bigTvMatch?.isExact === true ? <BigTvMatch bigTvMatch={bigTvMatch}/>: null}
+          {bigTvMatch?.isExact === true ? (
+            <BigTvMatch bigTvMatch={bigTvMatch} />
+          ) : null}
 
           {/* <AnimatePresence>
             {bigTvMatch ? (

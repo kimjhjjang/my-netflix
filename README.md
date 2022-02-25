@@ -1,4 +1,5 @@
 # 설치 및 기본 셋팅
+
     1) npx create-react-app <Project Name> --template=typescript
     2) npm i react-router-dom
     3) npm install recoil
@@ -23,13 +24,13 @@
             등록하여 테마 사용 가능.
          ㄴ App.tsx 파일에 모든 컴포넌트를
             <ThemeProvider theme={isDark ? darkTheme : lightTheme}> 로 감싼다.
-            
+
     5) npm i react-query
         ㄴ index.tsx 파일에
         const queryClient = new QueryClient(); 선언 후
         <App/> 컴포넌트를 <QueryClientProvider client={queryClient}>
         로 감싼다.
-        
+
     6) npm i framer-motion
     7) npm i react-helmet
     8) npm i react-hook-form
@@ -40,7 +41,11 @@
     10) npm i uuid 랜덤한 uuid를 생성해줌
         npm i --save-dev @types/uuid
 
+    11) https://www.youtube.com/watch?v=dQzIKaNzW84  -> firebase hosting 시키는 법 설명해놓음.
+    * build 된 index.html 파일을 보면 /%PROJECT_NAME%/..CSS  ,JS 로되어 있어서 /%PROJECT_NAME% 는 삭제해야함.
+
 # Getting Movies Poster API
+
 TheMovieDB API Key
 https://www.themoviedb.org/settings/api?language=ko
 
@@ -51,16 +56,16 @@ TheMovieDB Image가져오기
 이미지 파일명 앞에 https://image.tmdb.org/t/p/original/ 붙이기
 
 # login server
+
 npm i firebase@9.6.1 설치 해당 버전 사용하려면 router-dom 5.3이 설치되어 있어야 함.
 신규버전으로 할 경우 Router v6버전에서만 호환됨
 
 # Auth 인증하기
-   1. firebase Auth 웹 생성
-   2. 생성된 코드 제일 바깥쪽에 fbase.js 만들어서 붙여넣기
-   3. Auth 구글, 깃헙 추가.
-   4. 깃헙 추가시 깃헙 - setting - dev setting - auth add 에서 추가
 
-
+1.  firebase Auth 웹 생성
+2.  생성된 코드 제일 바깥쪽에 fbase.js 만들어서 붙여넣기
+3.  Auth 구글, 깃헙 추가.
+4.  깃헙 추가시 깃헙 - setting - dev setting - auth add 에서 추가
 
 # add Task
 
