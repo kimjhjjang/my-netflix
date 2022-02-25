@@ -12,7 +12,7 @@ import Tv from "./Routes/Tv";
 
 function AppRouter({ isLoggedIn, currentUser, isProfiles, selectedProfile }: any) {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <Router/*  basename={process.env.PUBLIC_URL} */>
       <Header isLoggedIn={(isLoggedIn)} isProfiles={isProfiles} selectedProfile={selectedProfile}/>
       
         {isLoggedIn ? (
