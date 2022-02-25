@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { TailSpin } from "react-loader-spinner";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import StarRatings from "react-star-ratings";
@@ -41,12 +42,12 @@ const Box = styled(motion.div)`
   border-radius: 5px;
   overflow: hidden;
   cursor: pointer;
-  width:45vw;
-  height:250px;
+  width: 45vw;
+  height: 250px;
   margin-bottom: 10px;
   @media screen and (min-width: 640px) {
-    width:280px;
-    height:400px;
+    width: 280px;
+    height: 400px;
     margin-bottom: 0px;
   }
   &:first-child {
@@ -83,6 +84,13 @@ const TvContent = styled.div`
   }
 `;
 
+const Loader = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const H1 = styled.h1`
   margin: 40px 0 40px 30px;
@@ -104,7 +112,9 @@ function Search() {
   return (
     <>
       {isLoading ? (
-        "loading"
+        <Loader>
+          <TailSpin color="#00BFFF" height={80} width={80} />
+        </Loader>
       ) : (
         <Content>
           <SearchResult>'{keyword}' 관련 콘텐츠</SearchResult>
@@ -115,9 +125,8 @@ function Search() {
                 <H1>{type.toLocaleUpperCase()}</H1>
                 <Row>
                   {data?.results.length !== 0
-                    ? data?.results.map((movie, index) => (
-                        <>
-                          {movie.media_type === type ? (
+                    ? data?.results.map((movie, index) => 
+                          movie.media_type === type ? (
                             <Box key={movie.id}>
                               <Item
                                 className="thumb"
@@ -127,7 +136,11 @@ function Search() {
                                 )}
                               ></Item>
                               <Info>
-                                <TvTitle>{movie.media_type === "movie" ? movie.title : movie.name}</TvTitle>
+                                <TvTitle>
+                                  {movie.media_type === "movie"
+                                    ? movie.title
+                                    : movie.name}
+                                </TvTitle>
                                 <TvContent>
                                   <StarRatings
                                     rating={movie.vote_average / 2}
@@ -140,9 +153,8 @@ function Search() {
                                 </TvContent>
                               </Info>
                             </Box>
-                          ) : null}
-                        </>
-                      ))
+                          ) : null
+                      )
                     : "검색된 콘텐츠가 없습니다."}
                 </Row>
               </div>
