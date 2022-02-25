@@ -171,6 +171,11 @@ const User = styled.div`
   margin-bottom: 15px;
   p {
     margin-left: 10px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  img {
+    border-radius: 15px;
   }
 `;
 
@@ -223,6 +228,10 @@ const SelectProfile = styled.div`
   img {
     margin-right: 10px;
     border-radius: 20px;
+  }
+  p{
+    font-size:16px;
+    font-weight: 600;
   }
 `;
 
@@ -463,7 +472,8 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                     variants={subMenuAnimate}
                   >
                     <SubMenu>
-                      {isProfiles.map((profile) => (
+                      {isProfiles
+                      .map((profile) => (
                         <User
                           key={profile.createAt}
                           onClick={() => onSelectProfile(profile)}
@@ -473,7 +483,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                             <img
                               src={profile.attachmentUrl}
                               style={{ width: "30px", height: "30px" }}
-                              alt={profile.name}
+                              alt={profile.id}
                             />
                           ) : (
                             <img

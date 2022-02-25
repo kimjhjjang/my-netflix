@@ -6,9 +6,7 @@ import {
   getPopularMovies,
   getTopRateMovie,
   getUpcomingMovie,
-  getYoutubeContents,
   IGetMoviesResult,
-  IGetYoutube,
   IPopularMoviesResult,
 } from "../api";
 import { makeImagePath } from "../utils";
