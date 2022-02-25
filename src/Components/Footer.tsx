@@ -14,7 +14,6 @@ const Wrapper = styled.footer`
 const Foot = styled.div`
   max-width: 90%;
   margin: 0 auto;
-  overflow: auto;
   @media screen and (min-width: 640px) {
     max-width: 70%;
   }

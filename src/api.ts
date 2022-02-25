@@ -204,3 +204,26 @@ export function getContentSimilars(id: string, type: string) {
     `${BASE_PATH}/${type}/${id}/similar?api_key=${API_KEY}&language=ko-kr`
   ).then((response) => response.json());
 }
+
+
+interface IYoutubeResult {
+      name: string;
+      key: string;
+      site: string,
+      size: number,
+      type: string,
+      official: boolean,
+      published_at: string,
+      id: string;
+}
+
+export interface IGetYoutube {
+  id : number;
+  results : IYoutubeResult[];
+}
+
+export async function getYoutubeContents(id: string, type: string) {
+  return await fetch(
+    `${BASE_PATH}/${type}/${id}/videos?api_key=${API_KEY}&language=ko-kr`
+  ).then((response) => response.json());
+};

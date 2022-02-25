@@ -1,18 +1,21 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { motion, AnimatePresence, } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   getMovies,
   getPopularMovies,
   getTopRateMovie,
   getUpcomingMovie,
+  getYoutubeContents,
   IGetMoviesResult,
+  IGetYoutube,
   IPopularMoviesResult,
 } from "../api";
 import { makeImagePath } from "../utils";
 import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Top10 from "../Components/Top10";
+import BackgroundMovie from "../Components/BackgroundMovie";
 import "../Common/main.css";
 import StarRatings from "react-star-ratings";
 import { TailSpin } from "react-loader-spinner";
@@ -20,6 +23,7 @@ import BigMovieMatch from "Components/BigMovieMatch";
 
 const Container = styled.div`
   overflow: hidden;
+  //background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1));
 `;
 
 const TvList = styled.div`
@@ -29,12 +33,11 @@ const TvList = styled.div`
 
 const StyleBox = styled.div`
   position: relative;
-  height: 350px;
+  height: 320px;
   margin-bottom: 30px;
   @media screen and (min-width: 640px) {
     height: 400px;
   }
-  
 `;
 
 const Row = styled(motion.div)`
@@ -79,8 +82,13 @@ const Item = styled.div<{ bgphoto: string }>`
 `;
 
 const H1 = styled.h1`
-  margin: 0 0 50px 30px;
-  font-size: 36px;
+  margin: 0 0 10px 10px;
+  font-size: 18px;
+  font-weight: 600;
+  @media screen and (min-width: 640px) {
+    font-size: 36px;
+    margin: 0 0 20px 30px;
+  }
 `;
 
 const Loader = styled.div`
@@ -92,7 +100,7 @@ const Loader = styled.div`
 `;
 
 const Banner = styled.div<{ bgphoto: string }>`
-  height: 70vh;
+  height: 60vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -100,9 +108,11 @@ const Banner = styled.div<{ bgphoto: string }>`
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgphoto});
   background-size: cover;
-  background-position: center;
+  background-position: center; 
   @media screen and (min-width: 640px) {
+    height: 70vh;
     padding: 60px;
+    background-image: none;
   }
 `;
 
@@ -193,25 +203,25 @@ function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
   return {
     width,
-    height
+    height,
   };
 }
 
-
-
 function Home() {
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
   useEffect(() => {
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
     }
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
   let offset: number = 6;
-  if(windowDimensions.width < 640){
-    offset = 2
+  if (windowDimensions.width < 640) {
+    offset = 2;
   }
   const history = useHistory();
   const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
@@ -229,13 +239,11 @@ function Home() {
   );
 
   // 인기 콘텐츠
-  const { data: topMovies/* , isLoading: topLoading */ } = useQuery<IGetMoviesResult>(
-    ["movies", "topMovie"],
-    getTopRateMovie
-  );
+  const { data: topMovies /* , isLoading: topLoading */ } =
+    useQuery<IGetMoviesResult>(["movies", "topMovie"], getTopRateMovie);
 
   //개봉 영화
-  const { data: comingMovies/* , isLoading: comingLoading */ } =
+  const { data: comingMovies /* , isLoading: comingLoading */ } =
     useQuery<IGetMoviesResult>(["movies", "upcomingMovie"], getUpcomingMovie);
 
   const [isBack, setIsBack] = useState(false);
@@ -319,7 +327,6 @@ function Home() {
     history.push(`/movies/${movieId}`);
   };
 
-
   return (
     <>
       {isLoading ? (
@@ -329,6 +336,7 @@ function Home() {
       ) : (
         <Container>
           <Banner bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}>
+            <BackgroundMovie id={data?.results[0].id+""}  /> 
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
             <button
@@ -352,169 +360,172 @@ function Home() {
             popLoading={popLoading}
           />
           <TvList>
-          <H1>상영중인 콘텐츠</H1>
-          <StyleBox>
-            <MoveBox>
-              <MoveButton onClick={() => prevIndex(0)}>&larr;</MoveButton>
-              <MoveButton onClick={() => nextIndex(0)}>&rarr;</MoveButton>
-            </MoveBox>
-            <AnimatePresence
-              initial={false}
-              onExitComplete={toggleLeaving}
-              custom={isBack}
-            >
-              <Row
-                variants={rowVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={{ type: "tween", duration: 1 }}
-                key={index}
+            <H1>상영중인 콘텐츠</H1>
+            <StyleBox>
+              <MoveBox>
+                <MoveButton onClick={() => prevIndex(0)}>&larr;</MoveButton>
+                <MoveButton onClick={() => nextIndex(0)}>&rarr;</MoveButton>
+              </MoveBox>
+              <AnimatePresence
+                initial={false}
+                onExitComplete={toggleLeaving}
                 custom={isBack}
               >
-                {data?.results
-                  .slice(1)
-                  .slice(offset * index, offset * index + offset)
-                  .map((movie) => (
-                    <Box
-                      key={movie.id}
-                      variants={boxVariants}
-                      whileHover="hover"
-                      initial="normal"
-                      transition={{ type: "tween" }}
-                      onClick={() => onBoxClicked(movie.id, "now")}
-                    >
-                      <Item
+                <Row
+                  variants={rowVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={{ type: "tween", duration: 1 }}
+                  key={index}
+                  custom={isBack}
+                >
+                  {data?.results
+                    .slice(1)
+                    .slice(offset * index, offset * index + offset)
+                    .map((movie) => (
+                      <Box
+                        key={movie.id}
+                        variants={boxVariants}
+                        whileHover="hover"
+                        initial="normal"
+                        transition={{ type: "tween" }}
+                        onClick={() => onBoxClicked(movie.id, "now")}
+                      >
+                        <Item
                           className="thumb"
                           bgphoto={makeImagePath(movie.poster_path, "w500")}
                         ></Item>
-                      <Info>
+                        <Info>
                           <TvTitle>{movie.title}</TvTitle>
                           <TvContent>
-                          <StarRatings
-                            rating={movie.vote_average / 2}
-                            starDimension="15px"
-                            starSpacing="1px"
-                            starRatedColor="tomato"
-                            numberOfStars={5}
-                          /> ({movie.vote_average} / 10)
+                            <StarRatings
+                              rating={movie.vote_average / 2}
+                              starDimension="15px"
+                              starSpacing="1px"
+                              starRatedColor="tomato"
+                              numberOfStars={5}
+                            />{" "}
+                            ({movie.vote_average} / 10)
                           </TvContent>
                         </Info>
-                    </Box>
-                  ))}
-              </Row>
-            </AnimatePresence>
-          </StyleBox>           
-           <H1>인기 콘텐츠</H1>
-          <StyleBox>
-            <MoveBox>
-              <MoveButton onClick={() => prevIndex(1)}>&larr;</MoveButton>
-              <MoveButton onClick={() => nextIndex(1)}>&rarr;</MoveButton>
-            </MoveBox>
-            <AnimatePresence
-              initial={false}
-              onExitComplete={toggleLeaving}
-              custom={isBack}
-            >
-              <Row
-                variants={rowVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={{ type: "tween", duration: 1 }}
-                key={topIndex}
+                      </Box>
+                    ))}
+                </Row>
+              </AnimatePresence>
+            </StyleBox>
+            <H1>인기 콘텐츠</H1>
+            <StyleBox>
+              <MoveBox>
+                <MoveButton onClick={() => prevIndex(1)}>&larr;</MoveButton>
+                <MoveButton onClick={() => nextIndex(1)}>&rarr;</MoveButton>
+              </MoveBox>
+              <AnimatePresence
+                initial={false}
+                onExitComplete={toggleLeaving}
                 custom={isBack}
               >
-                {topMovies?.results
-                  .slice(offset * topIndex, offset * topIndex + offset)
-                  .map((movie) => (
-                    <Box
-                      layoutId={movie.id + ""}
-                      key={movie.id}
-                      variants={boxVariants}
-                      whileHover="hover"
-                      initial="normal"
-                      onClick={() => onBoxClicked(movie.id, "top")}
-                    >
-                     <Item
+                <Row
+                  variants={rowVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={{ type: "tween", duration: 1 }}
+                  key={topIndex}
+                  custom={isBack}
+                >
+                  {topMovies?.results
+                    .slice(offset * topIndex, offset * topIndex + offset)
+                    .map((movie) => (
+                      <Box
+                        layoutId={movie.id + ""}
+                        key={movie.id}
+                        variants={boxVariants}
+                        whileHover="hover"
+                        initial="normal"
+                        onClick={() => onBoxClicked(movie.id, "top")}
+                      >
+                        <Item
                           className="thumb"
                           bgphoto={makeImagePath(movie.poster_path, "w500")}
                         ></Item>
-                      <Info>
+                        <Info>
                           <TvTitle>{movie.title}</TvTitle>
                           <TvContent>
-                          <StarRatings
-                            rating={movie.vote_average / 2}
-                            starDimension="15px"
-                            starSpacing="1px"
-                            starRatedColor="tomato"
-                            numberOfStars={5}
-                          /> ({movie.vote_average} / 10)
+                            <StarRatings
+                              rating={movie.vote_average / 2}
+                              starDimension="15px"
+                              starSpacing="1px"
+                              starRatedColor="tomato"
+                              numberOfStars={5}
+                            />{" "}
+                            ({movie.vote_average} / 10)
                           </TvContent>
                         </Info>
-                    </Box>
-                  ))}
-              </Row>
-            </AnimatePresence>
-          </StyleBox>
+                      </Box>
+                    ))}
+                </Row>
+              </AnimatePresence>
+            </StyleBox>
 
-         <H1>개봉 예정 콘텐츠</H1>
-          <StyleBox>
-            <MoveBox>
-              <MoveButton onClick={() => prevIndex(2)}>&larr;</MoveButton>
-              <MoveButton onClick={() => nextIndex(2)}>&rarr;</MoveButton>
-            </MoveBox>
-            <AnimatePresence
-              initial={false}
-              onExitComplete={toggleLeaving}
-              custom={isBack}
-            >
-              <Row
-                variants={rowVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={{ type: "tween", duration: 1 }}
-                key={comingIndex}
+            <H1>개봉 예정 콘텐츠</H1>
+            <StyleBox>
+              <MoveBox>
+                <MoveButton onClick={() => prevIndex(2)}>&larr;</MoveButton>
+                <MoveButton onClick={() => nextIndex(2)}>&rarr;</MoveButton>
+              </MoveBox>
+              <AnimatePresence
+                initial={false}
+                onExitComplete={toggleLeaving}
                 custom={isBack}
               >
-                {comingMovies?.results
-                  .slice(1)
-                  .slice(offset * comingIndex, offset * comingIndex + offset)
-                  .map((movie) => (
-                    <Box
-                      layoutId={movie.id + ""}
-                      key={movie.id}
-                      variants={boxVariants}
-                      whileHover="hover"
-                      initial="normal"
-                      onClick={() => onBoxClicked(movie.id, "coming")}
-                      
-                    >
-                      <Item
+                <Row
+                  variants={rowVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={{ type: "tween", duration: 1 }}
+                  key={comingIndex}
+                  custom={isBack}
+                >
+                  {comingMovies?.results
+                    .slice(1)
+                    .slice(offset * comingIndex, offset * comingIndex + offset)
+                    .map((movie) => (
+                      <Box
+                        layoutId={movie.id + ""}
+                        key={movie.id}
+                        variants={boxVariants}
+                        whileHover="hover"
+                        initial="normal"
+                        onClick={() => onBoxClicked(movie.id, "coming")}
+                      >
+                        <Item
                           className="thumb"
                           bgphoto={makeImagePath(movie.poster_path, "w500")}
                         ></Item>
-                      <Info>
+                        <Info>
                           <TvTitle>{movie.title}</TvTitle>
                           <TvContent>
-                          <StarRatings
-                            rating={movie.vote_average / 2}
-                            starDimension="15px"
-                            starSpacing="1px"
-                            starRatedColor="tomato"
-                            numberOfStars={5}
-                          /> ({movie.vote_average} / 10)
+                            <StarRatings
+                              rating={movie.vote_average / 2}
+                              starDimension="15px"
+                              starSpacing="1px"
+                              starRatedColor="tomato"
+                              numberOfStars={5}
+                            />{" "}
+                            ({movie.vote_average} / 10)
                           </TvContent>
                         </Info>
-                    </Box>
-                  ))}
-              </Row>
-            </AnimatePresence>
-          </StyleBox>
+                      </Box>
+                    ))}
+                </Row>
+              </AnimatePresence>
+            </StyleBox>
           </TvList>
-          {bigMovieMatch?.isExact === true ? <BigMovieMatch bigMovieMatch={bigMovieMatch}/>: null}
-          
+          {bigMovieMatch?.isExact === true ? (
+            <BigMovieMatch bigMovieMatch={bigMovieMatch} />
+          ) : null}
         </Container>
       )}
     </>
