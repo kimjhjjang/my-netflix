@@ -1,6 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faCircleXmark} from "@fortawesome/free-regular-svg-icons"
-import { getContentDetails, getContentSimilars, IGetDetails, IGetMoviesResult } from "api";
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import {
+  getContentDetails,
+  getContentSimilars,
+  IGetDetails,
+  IGetMoviesResult,
+} from "api";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "react-query";
 import { useHistory } from "react-router-dom";
@@ -50,8 +55,8 @@ const BigCover = styled(motion.div)<{ bgphoto: string }>`
 
 const Xclose = styled.div`
   position: absolute;
-  right:10px;
-  top:10px;
+  right: 10px;
+  top: 10px;
   cursor: pointer;
 `;
 const BigTitle = styled(motion.p)`
@@ -101,20 +106,21 @@ const BigOverview = styled(motion.p)`
   line-height: 1.8;
 `;
 
-function BigMovieMatch({bigMovieMatch} : any) {
+function BigMovieMatch({ bigMovieMatch }: any) {
   const history = useHistory();
   const onOverlayClick = () => history.push("/home");
   // Content detail 가져오기
   const { data, isLoading } = useQuery<IGetDetails>(
     ["getMovie", bigMovieMatch?.params.movieId],
-    () => getContentDetails(bigMovieMatch?.params.movieId + "", "movie") 
+    () => getContentDetails(bigMovieMatch?.params.movieId + "", "movie")
   );
 
-    // similar content 가져오기
-    const { data: similarData, isLoading:similarLoading } = useQuery<IGetMoviesResult>(
-        ["getContentSimilars", bigMovieMatch?.params.movieId],
-        () => getContentSimilars(bigMovieMatch?.params.movieId + "", "movie")
-      );
+  // similar content 가져오기
+  const { data: similarData, isLoading: similarLoading } =
+    useQuery<IGetMoviesResult>(
+      ["getContentSimilars", bigMovieMatch?.params.movieId],
+      () => getContentSimilars(bigMovieMatch?.params.movieId + "", "movie")
+    );
 
   return (
     <AnimatePresence>
@@ -143,7 +149,11 @@ function BigMovieMatch({bigMovieMatch} : any) {
                   bgphoto={makeImagePath(data?.backdrop_path || "")}
                 >
                   <Xclose onClick={onOverlayClick}>
-                    <FontAwesomeIcon icon={faCircleXmark} size="2x" color="white"/>
+                    <FontAwesomeIcon
+                      icon={faCircleXmark}
+                      size="2x"
+                      color="white"
+                    />
                   </Xclose>
                 </BigCover>
 
@@ -168,9 +178,10 @@ function BigMovieMatch({bigMovieMatch} : any) {
                   </p>
                   <p style={{ marginBottom: "15px" }}>
                     추천수 :
-                    {data?.vote_count
-                      ?.toFixed(0)
-                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                    {
+                      data?.vote_count?.toFixed(0)
+                      /* .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") */
+                    }
                   </p>
                   <StarRatings
                     rating={data?.vote_average && data?.vote_average / 2}
@@ -189,7 +200,11 @@ function BigMovieMatch({bigMovieMatch} : any) {
                 >
                   {data?.overview}
                 </BigOverview>
-                <SimilarContent bigMovieMatch={bigMovieMatch} similarData={similarData!} similarLoading={similarLoading}/>
+                <SimilarContent
+                  bigMovieMatch={bigMovieMatch}
+                  similarData={similarData!}
+                  similarLoading={similarLoading}
+                />
               </BigMovie>
             </>
           )}

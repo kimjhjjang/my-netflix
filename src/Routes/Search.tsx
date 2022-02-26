@@ -125,35 +125,32 @@ function Search() {
                 <H1>{type.toLocaleUpperCase()}</H1>
                 <Row>
                   {data?.results.length !== 0
-                    ? data?.results.map((movie, index) => 
-                          movie.media_type === type ? (
-                            <Box key={movie.id}>
-                              <Item
-                                className="thumb"
-                                bgphoto={makeImagePath(
-                                  movie.poster_path,
-                                  "w500"
-                                )}
-                              ></Item>
-                              <Info>
-                                <TvTitle>
-                                  {movie.media_type === "movie"
-                                    ? movie.title
-                                    : movie.name}
-                                </TvTitle>
-                                <TvContent>
-                                  <StarRatings
-                                    rating={movie.vote_average / 2}
-                                    starDimension="15px"
-                                    starSpacing="1px"
-                                    starRatedColor="tomato"
-                                    numberOfStars={5}
-                                  />{" "}
-                                  ({movie.vote_average} / 10)
-                                </TvContent>
-                              </Info>
-                            </Box>
-                          ) : null
+                    ? data?.results.map((movie, index) =>
+                        movie.media_type === type ? (
+                          <Box key={movie.id}>
+                            <Item
+                              className="thumb"
+                              bgphoto={makeImagePath(movie.poster_path, "w500")}
+                            ></Item>
+                            <Info>
+                              <TvTitle>
+                                {movie.media_type === "movie"
+                                  ? movie.title
+                                  : movie.name}
+                              </TvTitle>
+                              <TvContent>
+                                <StarRatings
+                                  rating={movie.vote_average / 2}
+                                  starDimension="15px"
+                                  starSpacing="1px"
+                                  starRatedColor="tomato"
+                                  numberOfStars={5}
+                                />{" "}
+                                ({movie.vote_average} / 10)
+                              </TvContent>
+                            </Info>
+                          </Box>
+                        ) : null
                       )
                     : "검색된 콘텐츠가 없습니다."}
                 </Row>

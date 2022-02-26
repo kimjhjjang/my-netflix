@@ -17,6 +17,7 @@ import { makeImagePath } from "../utils";
 
 const Container = styled.div`
   overflow: hidden;
+  background-color: rgb(25, 25, 25);
 `;
 
 const TvList = styled.div`
@@ -90,8 +91,13 @@ const Item = styled.div<{ bgphoto: string }>`
 `;
 
 const H1 = styled.h1`
-  margin: 0 0 50px 30px;
-  font-size: 36px;
+  margin: 0 0 10px 10px;
+  font-size: 18px;
+  font-weight: 600;
+  @media screen and (min-width: 640px) {
+    font-size: 36px;
+    margin: 0 0 20px 30px;
+  }
 `;
 
 const Loader = styled.div`
@@ -102,13 +108,13 @@ const Loader = styled.div`
   align-items: center;
 `;
 
-const Banner = styled.div<{ bgphoto: string }>`
+const Banner = styled(motion.div)<{ bgphoto: string }>`
   height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 20px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(25, 25, 25, 1)),
     url(${(props) => props.bgphoto});
   background-size: cover;
   background-position: center;
@@ -176,6 +182,21 @@ const MoveButton = styled.button`
     opacity: 0.8;
   }
 `;
+
+const useVariants = {
+  init: {
+    scale: 1.2,
+    opacity: 0,
+  },
+  animate: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "tween",
+      duration: 0.4,
+    },
+  },
+};
 
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
@@ -345,6 +366,9 @@ function Tv() {
         <Container>
           <Banner
             bgphoto={makeImagePath(popular?.results[0].backdrop_path || "")}
+            variants={useVariants}
+            initial="init"
+            animate="animate"
           >
             <Title>{popular?.results[0].name}</Title>
             <Overview>{popular?.results[0].overview}</Overview>

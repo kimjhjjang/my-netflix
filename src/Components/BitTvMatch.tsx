@@ -1,6 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faCircleXmark} from "@fortawesome/free-regular-svg-icons"
-import { getContentDetails, getContentSimilars, IGetDetails, IGetMoviesResult } from "api";
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import {
+  getContentDetails,
+  getContentSimilars,
+  IGetDetails,
+  IGetMoviesResult,
+} from "api";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "react-query";
 import { useHistory } from "react-router-dom";
@@ -98,24 +103,25 @@ const BigOverview = styled(motion.p)`
 
 const Xclose = styled.div`
   position: absolute;
-  right:10px;
-  top:10px;
+  right: 10px;
+  top: 10px;
   cursor: pointer;
 `;
 
-function BigTvMatch({bigTvMatch} : any) {
+function BigTvMatch({ bigTvMatch }: any) {
   const history = useHistory();
   const onOverlayClick = () => history.push("/tv");
   // Content detail 가져오기
   const { data, isLoading } = useQuery<IGetDetails>(
     ["getTv", bigTvMatch?.params.tvId],
-    () => getContentDetails(bigTvMatch?.params.tvId + "", "tv") 
+    () => getContentDetails(bigTvMatch?.params.tvId + "", "tv")
   );
-    // similar content 가져오기
-    const { data: similarData, isLoading:similarLoading } = useQuery<IGetMoviesResult>(
-        ["getContentSimilars", bigTvMatch?.params.tvId],
-        () => getContentSimilars(bigTvMatch?.params.tvId + "", "tv")
-      );
+  // similar content 가져오기
+  const { data: similarData, isLoading: similarLoading } =
+    useQuery<IGetMoviesResult>(
+      ["getContentSimilars", bigTvMatch?.params.tvId],
+      () => getContentSimilars(bigTvMatch?.params.tvId + "", "tv")
+    );
 
   return (
     <AnimatePresence>
@@ -134,7 +140,7 @@ function BigTvMatch({bigTvMatch} : any) {
                 initial={{ opacity: 0.6 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                style={{ top:  100 }}
+                style={{ top: 100 }}
                 layoutId={bigTvMatch.params.tvId}
               >
                 <BigCover
@@ -143,8 +149,12 @@ function BigTvMatch({bigTvMatch} : any) {
                   exit={{ opacity: 0 }}
                   bgphoto={makeImagePath(data?.backdrop_path || "")}
                 >
-                <Xclose onClick={onOverlayClick}>
-                    <FontAwesomeIcon icon={faCircleXmark} size="2x" color="white"/>
+                  <Xclose onClick={onOverlayClick}>
+                    <FontAwesomeIcon
+                      icon={faCircleXmark}
+                      size="2x"
+                      color="white"
+                    />
                   </Xclose>
                 </BigCover>
 
@@ -169,9 +179,10 @@ function BigTvMatch({bigTvMatch} : any) {
                   </p>
                   <p style={{ marginBottom: "15px" }}>
                     추천수 :
-                    {data?.vote_count
-                      ?.toFixed(0)
-                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                    {
+                      data?.vote_count?.toFixed(0)
+                      /* .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") */
+                    }
                   </p>
                   <StarRatings
                     rating={data?.vote_average && data?.vote_average / 2}
@@ -190,8 +201,12 @@ function BigTvMatch({bigTvMatch} : any) {
                 >
                   {data?.overview}
                 </BigOverview>
-                <SimilarContent bigMovieMatch={bigTvMatch} similarData={similarData!} similarLoading={similarLoading}/>
-                <Seasons seasons={data?.seasons}/>
+                <SimilarContent
+                  bigMovieMatch={bigTvMatch}
+                  similarData={similarData!}
+                  similarLoading={similarLoading}
+                />
+                <Seasons seasons={data?.seasons} />
               </BigMovie>
             </>
           )}

@@ -5,6 +5,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { authService, dbService } from "fbase";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHouse,
+  faClapperboard,
+  faTv,
+  faEye,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -17,6 +24,7 @@ const Nav = styled(motion.nav)`
   padding: 10px 15px;
   color: white;
   z-index: 3;
+  height: 80px;
   @media screen and (min-width: 640px) {
     padding: 20px 60px;
   }
@@ -27,15 +35,20 @@ const Col = styled.div`
   align-items: center;
 `;
 
+const NavCol = styled.div`
+  display: flex;
+  width: 100%;
+`;
+
 const Logo = styled(motion.svg)`
-  margin-right: 20px;
-  width: 60px;
+  width: 40px;
   height: 25px;
   fill: ${(props) => props.theme.red};
   @media screen and (min-width: 640px) {
     margin-right: 50px;
     width: 95px;
     height: 25px;
+    fill: ${(props) => props.theme.red};
   }
   path {
     stroke-width: 6px;
@@ -48,10 +61,14 @@ const Admin = styled(motion.svg)``;
 const Items = styled.ul`
   display: flex;
   align-items: center;
+  width: 100%;
+  justify-content: space-around;
+  @media screen and (min-width: 640px) {
+    justify-content: flex-start;
+  }
 `;
 
 const MobileSearch = styled.li`
-  margin-right: 20px;
   color: ${(props) => props.theme.white.darker};
   transition: color 0.3s ease-in-out;
   position: relative;
@@ -60,16 +77,13 @@ const MobileSearch = styled.li`
   flex-direction: column;
   font-size: 16px;
   font-weight: 600;
-  @media screen and (min-width: 640px) {
-    display: none;
-  }
+
   &:hover {
     color: ${(props) => props.theme.white.lighter};
   }
 `;
 
 const Item = styled.li`
-  margin-right: 20px;
   color: ${(props) => props.theme.white.darker};
   transition: color 0.3s ease-in-out;
   position: relative;
@@ -80,7 +94,9 @@ const Item = styled.li`
   font-weight: 600;
   @media screen and (min-width: 640px) {
     font-size: 24px;
+    margin-right: 20px;
   }
+
   &:hover {
     color: ${(props) => props.theme.white.lighter};
   }
@@ -103,16 +119,17 @@ const Search = styled.form`
 
 const Circle = styled(motion.span)`
   position: absolute;
-  width: 32px;
+  width: 16px;
   height: 3px;
   border-radius: 5px;
-  bottom: -12px;
+  bottom: -10px;
   left: 0;
   right: 0;
   margin: 0 auto;
   background-color: ${(props) => props.theme.red};
   @media screen and (min-width: 640px) {
     width: 50px;
+    bottom: -12px;
   }
 `;
 
@@ -137,8 +154,8 @@ const Input = styled(motion.input)`
 const MobileSearchForm = styled.form`
   position: absolute;
   width: 100%;
-  left:0;
-  top: 50px;
+  left: 0;
+  top: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -184,6 +201,9 @@ const Arrow = styled(motion.div)`
   pointer-events: none;
   border-bottom-color: #fff;
   border-width: 5px;
+  @media screen and (min-width: 640px) {
+    display: inherit;
+  }
 `;
 
 const Login = styled.span`
@@ -226,12 +246,35 @@ const SelectProfile = styled.div`
   align-items: center;
   margin: 0px 10px;
   img {
-    margin-right: 10px;
+    margin-right: 0px;
     border-radius: 20px;
+    @media screen and (min-width: 640px) {
+      margin-right: 10px;
+      border-radius: 20px;
+    }
   }
-  p{
-    font-size:16px;
-    font-weight: 600;
+  p {
+    display: none;
+    @media screen and (min-width: 640px) {
+      display: block;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+`;
+
+const PcText = styled.span`
+  display: none;
+  @media screen and (min-width: 640px) {
+    display: block;
+  }
+`;
+
+const MobileIcon = styled.i`
+  display: block;
+  @media screen and (min-width: 640px) {
+    display: none;
   }
 `;
 
@@ -309,6 +352,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   const useLogin = useRouteMatch<{ movieId: string }>("/login");
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useRouteMatch("/home");
+  const moviesMatch = useRouteMatch("/movies");
   const tvMatch = useRouteMatch("/tv");
   const searchMatch = useRouteMatch("/search");
   const inputAnimation = useAnimation();
@@ -379,7 +423,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
         ) : null}
         {isLoggedIn ? (
           <>
-            <Col>
+            <NavCol>
               <Link to="/">
                 <Logo
                   variants={logoVariants}
@@ -396,22 +440,46 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
               <Items>
                 <Item>
                   <Link to="/home">
-                    영화 {homeMatch && <Circle layoutId="circle" />}
+                    <PcText>HOME</PcText>{" "}
+                    <MobileIcon>
+                      <FontAwesomeIcon icon={faHouse} />
+                    </MobileIcon>
+                    {homeMatch && <Circle layoutId="bar" />}
+                  </Link>
+                </Item>
+                <Item>
+                  <Link to="/movies">
+                    <PcText>MOVIE</PcText>
+                    <MobileIcon>
+                      <FontAwesomeIcon icon={faClapperboard} />
+                    </MobileIcon>
+                    {moviesMatch && <Circle layoutId="bar" />}
                   </Link>
                 </Item>
                 <Item>
                   <Link to="/tv">
-                    티비 {tvMatch && <Circle layoutId="circle" />}
+                    <PcText>TV</PcText>
+                    <MobileIcon>
+                      <FontAwesomeIcon icon={faTv} />
+                    </MobileIcon>
+                    {tvMatch && <Circle layoutId="bar" />}
                   </Link>
                 </Item>
-                <MobileSearch onClick={onMobileSearchView}>
-                  검색 {searchMatch && <Circle layoutId="circle" />}
-                </MobileSearch>
+                <Item>
+                  {/* onClick={onMobileSearchView} */}
+                  <Link to="/gosearch">
+                    <PcText>SEARCH</PcText>
+                    <MobileIcon>
+                      <FontAwesomeIcon icon={faEye} />
+                    </MobileIcon>
+                    {searchMatch && <Circle layoutId="bar" />}
+                  </Link>
+                </Item>
               </Items>
-            </Col>
+            </NavCol>
             <Col>
               <Search onSubmit={handleSubmit(onValid)}>
-                <motion.svg
+                {/* <motion.svg
                   onClick={toggleSearch}
                   animate={{ x: searchOpen ? -265 : 0 }}
                   transition={{ type: "linear" }}
@@ -431,7 +499,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                   initial={{ scaleX: 0 }}
                   transition={{ type: "linear" }}
                   placeholder="검색해 보세요"
-                />
+                /> */}
                 <Account
                   onHoverStart={() => toggleHover(true)}
                   onHoverEnd={() => toggleHover(false)}
@@ -472,8 +540,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                     variants={subMenuAnimate}
                   >
                     <SubMenu>
-                      {isProfiles
-                      .map((profile) => (
+                      {isProfiles.map((profile) => (
                         <User
                           key={profile.createAt}
                           onClick={() => onSelectProfile(profile)}

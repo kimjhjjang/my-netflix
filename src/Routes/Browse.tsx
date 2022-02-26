@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPen} from "@fortawesome/free-solid-svg-icons"
+import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 import { dbService, storageService } from "fbase";
-import { addDoc, collection, doc, updateDoc  } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
@@ -60,7 +60,6 @@ const Users = styled.ul`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  
 `;
 
 const User = styled(motion.li)`
@@ -130,7 +129,7 @@ const UserName = styled.p`
 `;
 
 const ModifyProfile = styled.div`
-position: relative;
+  position: relative;
   display: flex;
   align-items: center;
   margin: 30px 0px;
@@ -192,7 +191,7 @@ const ChildBox = styled.div`
   align-self: flex-start;
   margin-top: 10px;
   margin-left: 10px;
-`
+`;
 
 const ChildInput = styled.input`
   border: 1px solid #333;
@@ -256,10 +255,10 @@ const InputFile = styled.input`
 `;
 const LabelFile = styled.label`
   position: absolute;
-  bottom : 30px;
-  left : 10px;
+  bottom: 30px;
+  left: 10px;
   padding: 5px;
-  background-color:#686868;
+  background-color: #686868;
   border-radius: 10px;
   color: white;
   cursor: pointer;
@@ -277,12 +276,12 @@ interface IUserProps {
 }
 
 interface IProps {
-  currentUser : any;
-  isProfiles : any[];
-  selectedProfile : any[];
+  currentUser: any;
+  isProfiles: any[];
+  selectedProfile: any[];
 }
 
-function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
+function Browse({ currentUser, isProfiles, selectedProfile }: IProps) {
   const [attachment, setAttachment] = useState("");
   const [addProfile, setAddProfile] = useState(true);
   const { register, handleSubmit, setValue } = useForm<IUserProps>();
@@ -324,16 +323,20 @@ function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
     setValue("name", "");
   };
 
-  const onSelectProfile = async (profile:any) => {
-    if(selectedProfile.length === 0){
+  const onSelectProfile = async (profile: any) => {
+    if (selectedProfile.length === 0) {
       await addDoc(collection(dbService, "selectedProfile"), profile);
       history.push("/home");
-    }else{
-      const profileUpdateText = doc(dbService, "selectedProfile", selectedProfile[0].cid);
+    } else {
+      const profileUpdateText = doc(
+        dbService,
+        "selectedProfile",
+        selectedProfile[0].cid
+      );
       await updateDoc(profileUpdateText, profile);
-      history.push("/home"); 
+      history.push("/home");
     }
-  }
+  };
 
   const onClicked = () => {
     setAddProfile((props) => !props);
@@ -409,9 +412,7 @@ function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
               ) : null}
             </Users>
           </UserBox>
-          <Link
-            to="/manageProfiles"
-          >
+          <Link to="/manageProfiles">
             <DeleteBox>프로필 관리</DeleteBox>
           </Link>
         </>
@@ -430,9 +431,14 @@ function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
             <ModifyProfile>
               <div>
                 <LabelFile className="input-file-button" htmlFor="input-file">
-                <FontAwesomeIcon icon={faUserPen} />
+                  <FontAwesomeIcon icon={faUserPen} />
                 </LabelFile>
-                <InputFile type="file" accept="image/*" onChange={onFileChange} id="input-file" />
+                <InputFile
+                  type="file"
+                  accept="image/*"
+                  onChange={onFileChange}
+                  id="input-file"
+                />
                 {attachment !== "" ? (
                   <UserImg>
                     <img
@@ -460,9 +466,9 @@ function Browse({ currentUser , isProfiles , selectedProfile}: IProps) {
                 />
                 <label htmlFor="add-profile-name" aria-label="이름"></label>
                 <ChildBox>
-                <ChildInput type="checkbox" {...register("child")} />
-                <label htmlFor="add-kids-profile"></label>
-                <span>어린이인가요?</span>
+                  <ChildInput type="checkbox" {...register("child")} />
+                  <label htmlFor="add-kids-profile"></label>
+                  <span>어린이인가요?</span>
                 </ChildBox>
                 {/* <span className="kids-profile-tooltip">
                   이 옵션을 선택하시면 이 프로필에 만 12세 이하 등급의 시리즈와
