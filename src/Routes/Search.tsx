@@ -1,13 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useForm } from "react-hook-form";
 import { TailSpin } from "react-loader-spinner";
 import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import styled from "styled-components";
 import { getSearchMovies, IGetSearchResult } from "../api";
 import { makeImagePath } from "../utils";
 
-const Content = styled.div`
+const Content = styled(motion.div)`
   position: relative;
   margin: 0 auto;
   margin-top: 100px;
@@ -23,7 +24,17 @@ const SearchResult = styled.h1`
   text-align: center;
   @media screen and (min-width: 640px) {
     font-size: 36px;
-    margin-bottom: 100px;
+    margin-bottom: 30px;
+  }
+`;
+
+const SearchKeyword = styled.h1`
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  @media screen and (min-width: 640px) {
+    font-size: 36px;
   }
 `;
 
@@ -97,6 +108,51 @@ const H1 = styled.h1`
   font-size: 36px;
 `;
 
+const SearchForm = styled.form`
+  color: white;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-top: 30px;
+  @media screen and (min-width: 640px) {
+    margin-top: 0px;
+  }
+`;
+
+const Input = styled.input`
+  height: 7vh;
+  padding: 5px 10px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: black;
+  border: 1px solid ${(props) => props.theme.white.lighter};
+  @media screen and (min-width: 640px) {
+    width: 40vw;
+    height: 7vh;
+    padding: 5px 10px;
+  }
+`;
+
+const useVariants = {
+  init: {
+    scale: 1.2,
+    opacity: 0,
+  },
+  animate: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "tween",
+      duration: 0.4,
+    },
+  },
+};
+
+interface IForm {
+  keyword: string;
+}
+
 function Search() {
   const location = useLocation();
   const keyword = new URLSearchParams(location.search).get("keyword");
@@ -104,10 +160,15 @@ function Search() {
     ["keyword", keyword],
     () => getSearchMovies(keyword + "")
   );
-
   const media_type = [
     ...Array.from(new Set(data?.results.map((item) => item.media_type))),
   ];
+
+  const history = useHistory();
+  const { register, handleSubmit } = useForm<IForm>();
+  const onValid = (data: IForm) => {
+    history.push(`/search?keyword=${data.keyword}`);
+  };
 
   return (
     <>
@@ -116,10 +177,16 @@ function Search() {
           <TailSpin color="#00BFFF" height={80} width={80} />
         </Loader>
       ) : (
-        <Content>
-          <SearchResult>'{keyword}' 관련 콘텐츠</SearchResult>
-
+        <Content variants={useVariants} initial="init" animate="animate">
           <AnimatePresence>
+            <SearchResult>영화 TV 프로그램을 검색해보세요.</SearchResult>
+            <SearchForm onSubmit={handleSubmit(onValid)}>
+              <Input
+                {...register("keyword", { required: true })}
+                placeholder="영화 TV 드라마를 검색할 수 있습니다."
+              />
+            </SearchForm>
+            <SearchKeyword>'{keyword}' 관련 콘텐츠</SearchKeyword>
             {media_type.map((type, i) => (
               <div key={i}>
                 <H1>{type.toLocaleUpperCase()}</H1>

@@ -38,6 +38,9 @@ const Col = styled.div`
 const NavCol = styled.div`
   display: flex;
   width: 100%;
+  @media screen and (min-width: 640px) {
+    width: auto;
+  }
 `;
 
 const Logo = styled(motion.svg)`
@@ -128,7 +131,7 @@ const Circle = styled(motion.span)`
   margin: 0 auto;
   background-color: ${(props) => props.theme.red};
   @media screen and (min-width: 640px) {
-    width: 50px;
+    width: 32px;
     bottom: -12px;
   }
 `;
@@ -180,6 +183,9 @@ const SubMenu = styled.div`
   right: -20px;
   padding: 20px;
   min-width: 180px;
+  @media screen and (min-width: 640px) {
+    top: 50px;
+  }
 `;
 
 const User = styled.div`
@@ -354,7 +360,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   const homeMatch = useRouteMatch("/home");
   const moviesMatch = useRouteMatch("/movies");
   const tvMatch = useRouteMatch("/tv");
-  const searchMatch = useRouteMatch("/search");
+  const searchMatch = useRouteMatch("/gosearch");
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useViewportScroll();

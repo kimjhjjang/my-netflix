@@ -88,12 +88,11 @@ function GoSearch() {
     <AnimatePresence>
       <Container>
         <Content variants={useVariants} initial="init" animate="animate">
-          <SearchResult>영화 TV를 검색해보세요.</SearchResult>
-
+          <SearchResult>영화 TV 프로그램을 검색해보세요.</SearchResult>
           <Search onSubmit={handleSubmit(onValid)}>
             <Input
               {...register("keyword", { required: true })}
-              placeholder="검색해 보세요"
+              placeholder="영화 TV 드라마를 검색할 수 있습니다."
             />
           </Search>
         </Content>

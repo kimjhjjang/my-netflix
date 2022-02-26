@@ -21,7 +21,6 @@ import BigMovieMatch from "Components/BigMovieMatch";
 
 const Container = styled.div`
   overflow: hidden;
-  background-color: rgb(25, 25, 25);
   //background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1));
 `;
 
@@ -104,10 +103,9 @@ const Banner = styled(motion.div)<{ bgphoto: string }>`
   flex-direction: column;
   justify-content: center;
   padding: 20px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(25, 25, 25, 1)),
+  /* background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(25, 25, 25, 1)),
     url(${(props) => props.bgphoto});
-  background-size: cover;
-  background-position: center;
+  background-size: cover; */
   @media screen and (min-width: 640px) {
     padding: 60px;
   }
@@ -126,8 +124,9 @@ const Overview = styled.p`
   font-size: 16px;
   width: 90%;
   line-height: 1.5;
+  font-weight: 600;
   @media screen and (min-width: 640px) {
-    font-size: 30px;
+    font-size: 22px;
     width: 50%;
   }
 `;
@@ -353,7 +352,7 @@ function Movie() {
             initial="init"
             animate="animate"
           >
-            {/* <BackgroundMovie id={data?.results[0].id+""}  /> */}
+            <BackgroundMovie id={data?.results[0].id + ""} type="movie" />
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
             <button
