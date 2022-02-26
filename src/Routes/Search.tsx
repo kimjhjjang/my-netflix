@@ -31,8 +31,7 @@ const SearchResult = styled.h1`
 const SearchKeyword = styled.h1`
   font-size: 22px;
   font-weight: 600;
-  margin-bottom: 10px;
-  margin-left: 20px;
+  margin: 20px 0px 10px 20px;
   @media screen and (min-width: 640px) {
     font-size: 36px;
   }
@@ -104,8 +103,13 @@ const Loader = styled.div`
 `;
 
 const H1 = styled.h1`
-  margin: 40px 0 40px 30px;
-  font-size: 36px;
+  margin: 40px 0 15px 30px;
+  font-size: 18px;
+  font-weight: 600;
+  @media screen and (min-width: 640px) {
+    font-size: 30px;
+    margin: 40px 0 40px 30px;
+  }
 `;
 
 const SearchForm = styled.form`
@@ -132,6 +136,14 @@ const Input = styled.input`
     height: 7vh;
     padding: 5px 10px;
   }
+`;
+
+const NoContent = styled.h2`
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: tomato;
+  padding: 150px 0px;
 `;
 
 const useVariants = {
@@ -177,54 +189,56 @@ function Search() {
           <TailSpin color="#00BFFF" height={80} width={80} />
         </Loader>
       ) : (
-        <Content variants={useVariants} initial="init" animate="animate">
-          <AnimatePresence>
+        <AnimatePresence>
+          <Content variants={useVariants} initial="init" animate="animate">
             <SearchResult>영화 TV 프로그램을 검색해보세요.</SearchResult>
             <SearchForm onSubmit={handleSubmit(onValid)}>
               <Input
                 {...register("keyword", { required: true })}
-                placeholder="영화 TV 드라마를 검색할 수 있습니다."
+                placeholder="영화 TV 드라마 등등"
               />
             </SearchForm>
             <SearchKeyword>'{keyword}' 관련 콘텐츠</SearchKeyword>
-            {media_type.map((type, i) => (
-              <div key={i}>
-                <H1>{type.toLocaleUpperCase()}</H1>
-                <Row>
-                  {data?.results.length !== 0
-                    ? data?.results.map((movie, index) =>
-                        movie.media_type === type ? (
-                          <Box key={movie.id}>
-                            <Item
-                              className="thumb"
-                              bgphoto={makeImagePath(movie.poster_path, "w500")}
-                            ></Item>
-                            <Info>
-                              <TvTitle>
-                                {movie.media_type === "movie"
-                                  ? movie.title
-                                  : movie.name}
-                              </TvTitle>
-                              <TvContent>
-                                <StarRatings
-                                  rating={movie.vote_average / 2}
-                                  starDimension="15px"
-                                  starSpacing="1px"
-                                  starRatedColor="tomato"
-                                  numberOfStars={5}
-                                />{" "}
-                                ({movie.vote_average} / 10)
-                              </TvContent>
-                            </Info>
-                          </Box>
-                        ) : null
-                      )
-                    : "검색된 콘텐츠가 없습니다."}
-                </Row>
-              </div>
-            ))}
-          </AnimatePresence>
-        </Content>
+            {media_type.length === 0 ? (
+              <NoContent>" 검색된 컨텐츠가 없습니다. "</NoContent>
+            ) : (
+              media_type.map((type, i) => (
+                <div key={i}>
+                  <H1>{type.toLocaleUpperCase()}</H1>
+                  <Row>
+                    {data?.results.map((movie) =>
+                      movie.media_type === type ? (
+                        <Box key={movie.id}>
+                          <Item
+                            className="thumb"
+                            bgphoto={makeImagePath(movie.poster_path, "w500")}
+                          ></Item>
+                          <Info>
+                            <TvTitle>
+                              {movie.media_type === "movie"
+                                ? movie.title
+                                : movie.name}
+                            </TvTitle>
+                            <TvContent>
+                              <StarRatings
+                                rating={movie.vote_average / 2}
+                                starDimension="15px"
+                                starSpacing="1px"
+                                starRatedColor="tomato"
+                                numberOfStars={5}
+                              />{" "}
+                              ({movie.vote_average} / 10)
+                            </TvContent>
+                          </Info>
+                        </Box>
+                      ) : null
+                    )}
+                  </Row>
+                </div>
+              ))
+            )}
+          </Content>
+        </AnimatePresence>
       )}
     </>
   );
