@@ -34,7 +34,7 @@ const BigMovie = styled(motion.div)`
   border-radius: 15px;
   background-color: ${(props) => props.theme.black.lighter};
   overflow-y: auto;
-  z-index: 1;
+  z-index: 2;
   &::-webkit-scrollbar {
     width: 4px;
   }
