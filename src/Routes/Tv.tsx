@@ -117,6 +117,7 @@ const Banner = styled(motion.div)<{ bgphoto: string }>`
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(25, 25, 25, 1)),
     url(${(props) => props.bgphoto});
   background-size: cover;
+  background-position: center;
   @media screen and (min-width: 640px) {
     padding: 60px;
   }
