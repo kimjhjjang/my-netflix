@@ -11,12 +11,14 @@ import Tv from "./Routes/Tv";
 import Movie from "./Routes/Movie";
 import Home from "./Routes/Home";
 import GoSearch from "Routes/GoSearch";
+import Talks from "Routes/Talks";
 
 function AppRouter({
   isLoggedIn,
   currentUser,
   isProfiles,
   selectedProfile,
+  isComment,
 }: any) {
   return (
     <Router>
@@ -36,6 +38,9 @@ function AppRouter({
           </Route>
           <Route path="/search">
             <Search />
+          </Route>
+          <Route path="/talks">
+            <Talks selectedProfile={selectedProfile} isComment={isComment} />
           </Route>
           <Route path="/browse">
             <Browse

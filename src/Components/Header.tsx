@@ -11,6 +11,7 @@ import {
   faClapperboard,
   faTv,
   faEye,
+  faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Nav = styled(motion.nav)`
@@ -361,6 +362,7 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
   const moviesMatch = useRouteMatch("/movies");
   const tvMatch = useRouteMatch("/tv");
   const searchMatch = useRouteMatch("/gosearch");
+  const talks = useRouteMatch("/talks");
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useViewportScroll();
@@ -479,6 +481,15 @@ function Header({ isLoggedIn, isProfiles, selectedProfile }: IProp) {
                       <FontAwesomeIcon icon={faEye} />
                     </MobileIcon>
                     {searchMatch && <Circle layoutId="bar" />}
+                  </Link>
+                </Item>
+                <Item>
+                  <Link to="/talks">
+                    <PcText>TALK</PcText>
+                    <MobileIcon>
+                      <FontAwesomeIcon icon={faCommentDots} />
+                    </MobileIcon>
+                    {talks && <Circle layoutId="bar" />}
                   </Link>
                 </Item>
               </Items>
