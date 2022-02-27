@@ -64,7 +64,6 @@ const GetComments = styled.div`
   margin-top: 30px;
 `;
 const CommentBox = styled(motion.div)`
-  width: 640px;
   display: grid;
   grid-template-columns: 1fr 9fr;
   gap: 15px;
