@@ -8,7 +8,7 @@ import {
 } from "api";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import styled from "styled-components";
 import { makeImagePath } from "utils";
@@ -108,7 +108,7 @@ const BigOverview = styled(motion.p)`
 
 function BigMovieMatch({ bigMovieMatch }: any) {
   const history = useHistory();
-  const onOverlayClick = () => history.push("/home");
+  const onOverlayClick = () => history.push("/movies");
   // Content detail 가져오기
   const { data, isLoading } = useQuery<IGetDetails>(
     ["getMovie", bigMovieMatch?.params.movieId],
@@ -163,9 +163,9 @@ function BigMovieMatch({ bigMovieMatch }: any) {
                   exit={{ opacity: 0 }}
                 >
                   {data?.title}
-                  <a href={data?.homepage + ""} target="_blank">
+                  <Link to={{ pathname: data?.homepage + "" }} target="_blank">
                     <span>Homepage</span>
-                  </a>
+                  </Link>
                 </BigTitle>
                 <BigDetailBox>
                   <p>개봉 {data?.release_date}</p>

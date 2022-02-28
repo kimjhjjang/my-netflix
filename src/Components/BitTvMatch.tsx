@@ -8,7 +8,7 @@ import {
 } from "api";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import styled from "styled-components";
 import { makeImagePath } from "utils";
@@ -164,9 +164,9 @@ function BigTvMatch({ bigTvMatch }: any) {
                   exit={{ opacity: 0 }}
                 >
                   {data?.name}
-                  <a href={data?.homepage + ""} target="_blank">
+                  <Link to={{ pathname: data?.homepage + "" }} target="_blank">
                     <span>Homepage</span>
-                  </a>
+                  </Link>
                 </BigTitle>
                 <BigDetailBox>
                   <p>개봉 {data?.release_date}</p>
