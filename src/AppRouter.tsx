@@ -28,7 +28,6 @@ function AppRouter({
         isProfiles={isProfiles}
         selectedProfile={selectedProfile}
       />
-      {isLoggedIn ? (
         <Switch>
           <Route path="/tv">
             <Tv />
@@ -69,19 +68,7 @@ function AppRouter({
             <Main isLoggedIn={isLoggedIn} />
           </Route>
         </Switch>
-      ) : (
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/signup">
-            <Signup isLoggedIn={isLoggedIn} />
-          </Route>
-          <Route path={["/"]}>
-            <Main isLoggedIn={isLoggedIn} />
-          </Route>
-        </Switch>
-      )}
+      
       <Footer />
     </Router>
   );
